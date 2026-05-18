@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./logo-light.png" />
+</p>
+
 # ODIN Catalog - Open Data Intelligence for the Modern Enterprise
 
 > **Alpha** - APIs and schemas may change between releases.
