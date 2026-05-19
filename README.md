@@ -146,6 +146,44 @@ Publish governed data products with defined SLAs, access policies, and lineage. 
 
 ---
 
+## Vocabulary & AI — Meaning is the missing layer between your data and AI
+
+LLMs can search for tables. They cannot tell you whether `TRADE_AMT` is gross or net, in USD or EUR, pre- or post-netting. Standard semantic vocabularies — schema.org and FIBO — close that gap. When every data element carries a machine-readable concept IRI, AI stops guessing and starts reasoning.
+
+### Ambiguity is the root cause of AI failure
+
+RAG pipelines retrieve chunks of text. Without semantic grounding, a question about "settlement amount" returns every table that mentions the word "amount." SKOS `exactMatch` bindings to `fibo-fnd-acc-cur:MonetaryAmount` make retrieval precise — the model finds the right element, not the most popular one.
+
+### Standard IRIs are native to foundation models
+
+schema.org and FIBO IRIs appear extensively in the training corpora of every major LLM. Annotating a data element with `https://schema.org/price` or `fibo-md-temx-ex:MarketPrice` puts it in semantic proximity to everything the model already understands about that concept — zero prompt engineering required.
+
+### Agents need contracts, not descriptions
+
+As AI moves from answering questions to taking actions — writing pipelines, generating reports, triggering workflows — it needs to know exactly what data it is handling. A vocabulary mapping is a contract: this column contains a `LegalEntityIdentifier`, not "some kind of ID." Agents that operate on contracts are auditable; agents that operate on descriptions are not.
+
+### Your metadata becomes a knowledge graph
+
+ODIN's vocabulary mappings, logical models, and lineage edges form a traversable knowledge graph. AI agents don't just search it — they walk it. From a regulatory report, upstream through lineage to source systems, sideways through vocabulary to equivalent concepts in other datasets. That kind of reasoning is only possible when meaning is explicit.
+
+`Knowledge Graph` `Apache AGE` `Graph Traversal`
+
+### FIBO: regulatory-grade semantics, pre-loaded
+
+The Financial Industry Business Ontology is the only semantic vocabulary built specifically for financial data with regulatory intent. When an AI model encounters a FIBO-annotated dataset, it has access to the same ontological structure that regulators, risk managers, and auditors use to describe the same concepts. No translation layer. No interpretation gap.
+
+`FIBO FND` `FIBO FBC` `FIBO SEC · MD`
+
+### Cross-system equivalence without ETL
+
+Different source systems use different column names for the same concept: `trade_ccy`, `SETTL_CURR`, `SettlementCurrency`. All three mapped to `fibo-fnd-acc-cur:Currency` with `exactMatch` become interchangeable to any AI agent — without moving a byte of data. Semantic equivalence is free once vocabulary mappings exist.
+
+---
+
+> **The bottom line:** every major AI lab is investing in structured data and knowledge graphs because they have discovered the same thing — unstructured text retrieval has a ceiling. The organisations that will get the most from AI in the next decade are the ones who spent the last decade building semantic structure into their data. ODIN gives you that structure today, on top of the data you already have.
+
+---
+
 ## Architecture
 
 Open source. API-first. Open-standards.
@@ -156,7 +194,7 @@ Six Spring Boot microservices, each owning its data store. Deploy to Kubernetes,
 
 | Service | Port | Responsibility |
 |---|---|---|
-| **catalog-service** | 8001 | DCAT/DPROD/CSV-W metadata. Logical models. Vocabulary mappings. Kafka event publisher. |
+| **inventory-service** | 8001 | DCAT/DPROD/CSV-W metadata. Logical models. Vocabulary mappings. Kafka event publisher. |
 | **harvest-service** | 8002 | Spring Batch crawlers for Snowflake, Glue, Teradata, DCAT HTTP. Quartz scheduler. |
 | **lineage-service** | 8003 | OpenLineage ingestion. DDL parsing via Apache Calcite. Apache AGE Cypher graph queries. |
 | **search-service** | 8004 | OpenSearch indexing with FIBO facets. Autocomplete. Full-text + semantic hybrid search. |
