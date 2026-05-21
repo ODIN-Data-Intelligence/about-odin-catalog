@@ -662,6 +662,133 @@
       color: #fcd34d;
     }
 
+    /* ── API-First ───────────────────────────────────────── */
+    #api {
+      background: var(--surface);
+    }
+
+    .api-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      margin-top: 56px;
+    }
+
+    @media (max-width: 900px) {
+      .api-layout { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    .api-snippet {
+      background: #0a0f1e;
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+
+    .api-snippet-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .api-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+
+    .api-snippet-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .api-snippet-body {
+      padding: 20px 24px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .api-kw  { color: #c4b5fd; }
+    .api-url { color: #67e8f9; }
+    .api-key { color: #93c5fd; }
+    .api-str { color: #86efac; }
+    .api-num { color: #fcd34d; }
+    .api-cm  { color: var(--subtle); }
+
+    .api-builds {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .api-build-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface2);
+      transition: border-color 0.2s;
+    }
+
+    .api-build-card:hover {
+      border-color: var(--border2);
+    }
+
+    .api-build-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .api-build-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      margin-bottom: 4px;
+    }
+
+    .api-build-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .api-endpoints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 40px;
+    }
+
+    .api-ep {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: var(--surface2);
+    }
+
+    .api-ep-method {
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .api-ep-path { color: var(--muted); }
+
     /* ── Testimonial / quote ──────────────────────────────── */
     .quote-section {
       text-align: center;
@@ -794,6 +921,7 @@
         <a href="#lineage">Lineage</a>
         <a href="#usecase">Use Cases</a>
         <a href="#vocabulary">Vocabulary & AI</a>
+        <a href="#api">API-First</a>
         <a href="#alpha">Early Access</a>
         <a href="https://docs.odin-catalog.com/">Docs</a>
         <a href="https://github.com/odin-catalog/odin" class="nav-cta">GitHub →</a>
@@ -1332,6 +1460,108 @@
     </div>
   </section>
 
+  <!-- ── API-First ─────────────────────────────────────────────── -->
+  <section id="api">
+    <div class="container">
+      <p class="section-label">API-First</p>
+      <h2>The UI ships as a reference app.<br />Build the experience your users need.</h2>
+      <p class="section-sub">Every capability in ODIN is available over a documented REST API. The bundled producer and consumer interfaces show what's possible — they're a starting point, not a constraint.</p>
+
+      <div class="api-layout">
+
+        <!-- Left: code snippet -->
+        <div>
+          <div class="api-snippet">
+            <div class="api-snippet-bar">
+              <div class="api-dot" style="background:#f87171"></div>
+              <div class="api-dot" style="background:#fbbf24"></div>
+              <div class="api-dot" style="background:#34d399"></div>
+              <span class="api-snippet-label">REST · Bearer or API key</span>
+            </div>
+            <div class="api-snippet-body"><span class="api-cm"># Find datasets with FIBO MonetaryAmount elements</span>
+<span class="api-kw">GET</span> <span class="api-url">/api/v1/search?q=trade+amount&amp;type=DATASET</span>
+Authorization: Bearer &lt;token&gt;
+
+<span class="api-cm"># Response</span>
+{
+  <span class="api-key">"results"</span>: [
+    {
+      <span class="api-key">"id"</span>:    <span class="api-str">"f453e98f-..."</span>,
+      <span class="api-key">"title"</span>: <span class="api-str">"Trade Blotter"</span>,
+      <span class="api-key">"fiboConcepts"</span>: [
+        <span class="api-str">"fibo-fnd-acc-cur:MonetaryAmount"</span>
+      ],
+      <span class="api-key">"hasLineage"</span>:      <span class="api-num">true</span>,
+      <span class="api-key">"hasLogicalModel"</span>: <span class="api-num">true</span>,
+      <span class="api-key">"distributionCount"</span>: <span class="api-num">3</span>
+    }
+  ],
+  <span class="api-key">"totalHits"</span>: <span class="api-num">11</span>
+}
+
+<span class="api-cm"># Upstream lineage — 5 hops</span>
+<span class="api-kw">GET</span> <span class="api-url">/api/v1/datasets/prod/trade_blotter/lineage</span>
+    <span class="api-url">?direction=upstream&amp;depth=5</span>
+
+<span class="api-cm"># AI — stream an answer over SSE</span>
+<span class="api-kw">POST</span> <span class="api-url">/api/v1/conversations/:id/messages</span>
+Accept: text/event-stream
+{ <span class="api-key">"content"</span>: <span class="api-str">"Which datasets feed the P&amp;L report?"</span> }</div>
+          </div>
+
+          <div class="api-endpoints" style="margin-top:24px">
+            <div class="api-ep"><span class="api-ep-method" style="color:#6ee7b7">GET</span><span class="api-ep-path">/datasets</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#6ee7b7">GET</span><span class="api-ep-path">/search</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#6ee7b7">GET</span><span class="api-ep-path">/lineage</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#fbbf24">POST</span><span class="api-ep-path">/conversations</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#fbbf24">POST</span><span class="api-ep-path">/lineage</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#6ee7b7">GET</span><span class="api-ep-path">/data-products</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#fbbf24">POST</span><span class="api-ep-path">/sources/:id/trigger</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#6ee7b7">GET</span><span class="api-ep-path">/logical-models</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#6ee7b7">GET</span><span class="api-ep-path">/vocabularies</span></div>
+            <div class="api-ep"><span class="api-ep-method" style="color:#93c5fd">OpenAPI</span><span class="api-ep-path">/swagger-ui.html</span></div>
+          </div>
+        </div>
+
+        <!-- Right: what you could build -->
+        <div>
+          <p style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--subtle);margin-bottom:20px">What teams build on top of ODIN</p>
+          <div class="api-builds">
+            <div class="api-build-card">
+              <div class="api-build-icon">🏢</div>
+              <div>
+                <h4>Internal data portal</h4>
+                <p>A branded, role-tailored portal that surfaces only the datasets and products relevant to each business unit — finance sees FIBO-annotated instruments, operations sees operational tables.</p>
+              </div>
+            </div>
+            <div class="api-build-card">
+              <div class="api-build-icon">🔌</div>
+              <div>
+                <h4>IDE &amp; notebook plugin</h4>
+                <p>Bring lineage and schema context directly into VS Code, JupyterLab, or DataGrip. Hover over a table name to see its logical model, upstream sources, and vocabulary annotations inline.</p>
+              </div>
+            </div>
+            <div class="api-build-card">
+              <div class="api-build-icon">💬</div>
+              <div>
+                <h4>Slack or Teams bot</h4>
+                <p>Let analysts ask "who owns the trade positions dataset?" or "what feeds the risk report?" in the tools they already use. The AI API streams back a grounded, cited answer.</p>
+              </div>
+            </div>
+            <div class="api-build-card">
+              <div class="api-build-icon">🛒</div>
+              <div>
+                <h4>Data product marketplace</h4>
+                <p>A consumer-facing storefront where data products can be browsed, subscribed to, and access-requested — with lifecycle status, SLA, and distribution format surfaced from the API.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ── Quote ──────────────────────────────────────────────────── -->
   <div class="quote-section">
     <blockquote>
@@ -1366,7 +1596,7 @@
         </p>
 
         <div style="text-align:center;margin-top:8px">
-          <a href="mailto:hi@odin-catalog.com" class="cta-btn">Request early access →</a>
+          <a href="mailto:hi@odin-catalog.com" class="cta-btn">Apply for early access — hi@odin-catalog.com →</a>
         </div>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:48px">
@@ -1415,7 +1645,7 @@
       entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
       { threshold: 0.08 }
     );
-    document.querySelectorAll('.feature-card, .problem-card, .std-card, .arch-card').forEach(el => {
+    document.querySelectorAll('.feature-card, .problem-card, .std-card, .arch-card, .api-build-card').forEach(el => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(16px)';
       el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
