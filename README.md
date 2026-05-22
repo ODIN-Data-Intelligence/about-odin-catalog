@@ -236,4 +236,4 @@ We're working with a small group of data engineering and governance teams across
 
 ## License
 
-Apache 2.0 · [GitHub](https://github.com/odin-catalog/odin)
+Apache 2.0 · [GitHub](https://github.com/ODIN-Data-Intelligence)
