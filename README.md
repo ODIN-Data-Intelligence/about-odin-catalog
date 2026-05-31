@@ -6,7 +6,7 @@
 
 > **Alpha** - APIs and schemas may change between releases.
 
-ODIN is an open-source data catalog built on W3C standards. Business semantics, end-to-end lineage, and AI-powered discovery - designed for enterprises where data governance isn't optional.
+ODIN is an open-source data catalog built on W3C standards. Business semantics, end-to-end lineage, AI-powered discovery, and accountable data ownership - designed for enterprises where data governance isn't optional.
 
 **Standards:** DCAT 3.0 · DPROD · OpenLineage · FIBO · CSV-W · Apache AGE · Spring AI
 
@@ -66,6 +66,16 @@ Connect to Snowflake, AWS Glue, Teradata, or any DCAT HTTP endpoint. Scheduled S
 Full-text and semantic search over OpenSearch. Filter by entity type, lifecycle, vocabulary concepts, FIBO ontology terms, or whether a dataset has lineage and a published logical model. Autocomplete suggestions in milliseconds.
 
 `OpenSearch` `FIBO Facets` `Autocomplete` `Semantic`
+
+### Data Ownership & Governance
+Assign accountable owners to every dataset with a structured role model — Administrator, Data Owner, Data Steward, and Data Governance Officer. Ownership transfers go through a proposal-and-approval workflow so accountability is never lost. A governance dashboard surfaces pending tasks, outstanding proposals, and a full activity feed for each user.
+
+`Role-Based` `Transfer Proposals` `Audit Trail` `Activity Feed`
+
+### AI Metadata Enrichment
+Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model element, the AI service suggests a data classification level (Public through Restricted) and generates a plain-English business description — both grounded in vocabulary mappings and existing context. Data owners review and accept or reject each suggestion in one click.
+
+`Classification AI` `Description Gen` `Owner-Gated` `Spring AI`
 
 ---
 
@@ -199,7 +209,7 @@ Six Spring Boot microservices, each owning its data store. Deploy to Kubernetes,
 | **lineage-service** | 8003 | OpenLineage ingestion. DDL parsing via Apache Calcite. Apache AGE Cypher graph queries. |
 | **search-service** | 8004 | OpenSearch indexing with FIBO facets. Autocomplete. Full-text + semantic hybrid search. |
 | **ai-service** | 8005 | Spring AI RAG pipeline. pgvector embeddings. Ollama (local) or OpenAI. SSE chat streaming. |
-| **identity-service** | 8006 | Keycloak OAuth2/OIDC integration. ABAC policies. API keys. Multi-tenant isolation. |
+| **identity-service** | 8006 | Keycloak OAuth2/OIDC. Role-based access (Administrator, Data Owner, Steward, Governance). User management with Keycloak sync. API keys. Multi-tenant isolation. |
 
 ### Data Stores
 

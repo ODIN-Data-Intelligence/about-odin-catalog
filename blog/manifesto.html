@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The ODIN Design Manifesto — ODIN Catalog</title>
+  <meta name="description"
+    content="The philosophical foundations of ODIN Catalog — why metadata without meaning is a dead end, why standards are load-bearing, and why understanding data is the only governance goal that matters." />
+  <meta name="author" content="ODIN Catalog" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#060912" />
+
+  <link rel="canonical" href="https://odin-catalog.com/blog/manifesto" />
+  <link rel="icon" type="image/png" href="../logo-dark.png" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="ODIN Catalog" />
+  <meta property="og:title" content="The ODIN Design Manifesto" />
+  <meta property="og:description"
+    content="Why metadata without meaning is a dead end, why standards are load-bearing, and why understanding data is the only governance goal that matters." />
+  <meta property="og:url" content="https://odin-catalog.com/blog/manifesto" />
+  <meta property="og:image" content="https://odin-catalog.com/logo-light.png" />
+  <meta property="article:published_time" content="2026-05-31" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The ODIN Design Manifesto",
+    "description": "The philosophical foundations of ODIN Catalog — why metadata without meaning is a dead end, why standards are load-bearing, and why understanding data is the only governance goal that matters.",
+    "datePublished": "2026-05-31",
+    "author": { "@type": "Organization", "name": "ODIN Catalog" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ODIN Catalog",
+      "url": "https://odin-catalog.com/",
+      "logo": "https://odin-catalog.com/logo-light.png"
+    },
+    "url": "https://odin-catalog.com/blog/manifesto",
+    "mainEntityOfPage": "https://odin-catalog.com/blog/manifesto"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #060912;
+      --surface:   #0d1321;
+      --surface2:  #111827;
+      --border:    rgba(255,255,255,0.07);
+      --border2:   rgba(255,255,255,0.12);
+      --indigo:    #6366f1;
+      --indigo-lt: #818cf8;
+      --cyan:      #22d3ee;
+      --violet:    #a78bfa;
+      --emerald:   #10b981;
+      --amber:     #f59e0b;
+      --rose:      #f43f5e;
+      --text:      #f1f5f9;
+      --muted:     #94a3b8;
+      --subtle:    #475569;
+    }
+
+    html { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+    body { min-height: 100vh; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav — identical to index.html ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(6,9,18,0.8);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 60px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .logo-img { height: 36px; width: 36px; object-fit: contain; border-radius: 8px; }
+    .logo-name { font-weight: 700; font-size: 15px; letter-spacing: -0.3px; }
+    .alpha-pill {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--amber); border: 1px solid rgba(245,158,11,0.4);
+      background: rgba(245,158,11,0.08); padding: 2px 8px; border-radius: 99px; margin-left: 8px;
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { font-size: 14px; color: var(--muted); font-weight: 500; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      font-size: 13px; font-weight: 600; background: var(--indigo);
+      color: #fff; padding: 8px 18px; border-radius: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .nav-cta:hover { background: #4f52d0; transform: translateY(-1px); }
+
+    /* ── Reading progress bar ── */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+      z-index: 200; width: 0%;
+    }
+
+    /* ── Page wrapper ── */
+    .page-outer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 24px 96px;
+    }
+
+    /* ── Article header (full-width above the two columns) ── */
+    .article-header {
+      max-width: 720px;
+      margin-bottom: 64px;
+    }
+    .article-meta {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .meta-tag {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--indigo-lt);
+      background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25);
+      padding: 3px 10px; border-radius: 6px;
+    }
+    .meta-sep { color: var(--subtle); }
+    .meta-date, .meta-read { font-size: 13px; color: var(--subtle); }
+
+    .article-title {
+      font-size: clamp(36px, 6vw, 60px); font-weight: 900;
+      line-height: 1.06; letter-spacing: -2px; margin-bottom: 24px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #fff 20%, var(--indigo-lt) 55%, var(--cyan) 85%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .article-lede {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 20px; line-height: 1.65; color: var(--muted);
+      padding-bottom: 40px; border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Two-column layout ── */
+    .article-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* ── Article body ── */
+    .article-body { min-width: 0; }
+
+    .article-body p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px; line-height: 1.8; color: #cbd5e1;
+      margin-bottom: 24px;
+    }
+    .article-body h2 {
+      font-size: clamp(22px, 3.5vw, 30px); font-weight: 800;
+      letter-spacing: -0.8px; color: var(--text);
+      margin: 56px 0 20px; scroll-margin-top: 80px;
+    }
+    .article-body h3 {
+      font-size: 18px; font-weight: 700; letter-spacing: -0.3px;
+      color: var(--text); margin: 36px 0 14px;
+    }
+    .article-body strong { color: var(--text); font-weight: 600; }
+    .article-body em {
+      font-style: italic; color: var(--indigo-lt);
+    }
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace; font-size: 14px;
+      background: rgba(255,255,255,0.07); border: 1px solid var(--border2);
+      padding: 2px 7px; border-radius: 5px; color: #c4b5fd;
+    }
+    .article-body ul, .article-body ol { padding-left: 24px; margin-bottom: 24px; }
+    .article-body li {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px; line-height: 1.8; color: #cbd5e1; margin-bottom: 8px;
+    }
+
+    .pull-quote {
+      border-left: 3px solid var(--indigo);
+      margin: 40px 0; padding: 20px 28px;
+      background: rgba(99,102,241,0.05);
+      border-radius: 0 12px 12px 0;
+    }
+    .pull-quote p {
+      font-family: 'Lora', serif;
+      font-size: 20px !important; font-style: italic;
+      color: var(--text) !important; margin: 0 !important; line-height: 1.6 !important;
+    }
+
+    .callout {
+      border: 1px solid var(--border2); border-radius: 14px;
+      padding: 24px 28px; background: var(--surface2); margin: 36px 0;
+    }
+    .callout-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--subtle); margin-bottom: 12px;
+    }
+    .callout p {
+      font-size: 15px !important; margin-bottom: 0 !important;
+      color: var(--muted) !important; font-family: 'Inter', sans-serif !important;
+    }
+
+    .principle {
+      display: flex; gap: 20px; align-items: flex-start;
+      margin: 24px 0; padding: 24px 28px;
+      border: 1px solid var(--border); border-radius: 14px;
+      background: var(--surface); transition: border-color 0.2s;
+    }
+    .principle:hover { border-color: var(--border2); }
+    .principle-num {
+      font-size: 11px; font-weight: 800; letter-spacing: 1px;
+      color: var(--indigo-lt); background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.25); border-radius: 8px;
+      padding: 4px 10px; flex-shrink: 0; margin-top: 3px;
+    }
+    .principle-body h4 {
+      font-size: 16px; font-weight: 700; color: var(--text);
+      margin-bottom: 8px; letter-spacing: -0.2px;
+    }
+    .principle-body p {
+      font-size: 15px !important; line-height: 1.7 !important;
+      color: var(--muted) !important; margin: 0 !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    .section-divider { height: 1px; background: var(--border); margin: 48px 0; }
+
+    /* ── Sticky side TOC ── */
+    .article-sidebar {
+      position: sticky;
+      top: 84px; /* below fixed nav */
+      max-height: calc(100vh - 104px);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .article-sidebar::-webkit-scrollbar { display: none; }
+
+    .toc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 20px 16px;
+    }
+    .toc-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+      color: var(--subtle); margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .toc-list li a {
+      display: block; padding: 6px 10px;
+      font-size: 13px; font-weight: 500; color: var(--subtle);
+      border-radius: 7px; line-height: 1.4;
+      transition: color 0.15s, background 0.15s;
+    }
+    .toc-list li a:hover { color: var(--muted); background: rgba(255,255,255,0.04); }
+    .toc-list li a.active {
+      color: var(--indigo-lt); background: rgba(99,102,241,0.1);
+      font-weight: 600;
+    }
+
+    .toc-meta {
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .toc-meta-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; color: var(--subtle);
+    }
+    .toc-meta-dot {
+      width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    /* ── Article footer ── */
+    .article-footer {
+      margin-top: 72px; padding-top: 36px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--indigo-lt);
+      transition: gap 0.15s;
+    }
+    .back-link:hover { gap: 12px; }
+    .footer-copy { font-size: 13px; color: var(--subtle); }
+    .footer-copy a { color: var(--indigo-lt); }
+
+    @media (max-width: 1024px) {
+      .article-layout { grid-template-columns: 1fr; }
+      .article-sidebar { display: none; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .page-outer { padding: 90px 20px 72px; }
+      .pull-quote { padding: 16px 20px; }
+      .principle { flex-direction: column; gap: 12px; }
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CLPM26RP7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-9CLPM26RP7');
+  </script>
+</head>
+
+<body>
+
+  <div id="progress"></div>
+
+  <!-- ── Navigation — matches index.html exactly ── -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <img src="../logo-dark.png" alt="ODIN Catalog" class="logo-img" />
+        <span class="logo-name">ODIN Catalog</span>
+        <span class="alpha-pill">Alpha</span>
+      </div>
+      <div class="nav-links">
+        <a href="../#features">Features</a>
+        <a href="../#standards">Standards</a>
+        <a href="../#lineage">Lineage</a>
+        <a href="../#usecase">Use Cases</a>
+        <a href="../#vocabulary">Vocabulary &amp; AI</a>
+        <a href="../#api">API-First</a>
+        <a href="../#alpha">Early Access</a>
+        <a href="https://docs.odin-catalog.com/">Docs</a>
+        <a href="./index.html">Blog</a>
+        <a href="https://github.com/ODIN-Data-Intelligence" class="nav-cta">GitHub →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-outer">
+
+    <!-- ── Article header ── -->
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="meta-tag">Design</span>
+        <span class="meta-sep">·</span>
+        <span class="meta-date">31 May 2026</span>
+        <span class="meta-sep">·</span>
+        <span class="meta-read">18 min read</span>
+      </div>
+      <h1 class="article-title">
+        The ODIN<br />
+        <span class="gradient-text">Design Manifesto</span>
+      </h1>
+      <p class="article-lede">
+        The data governance tools we use today were designed for a world where <em>having</em> metadata was enough.
+        ODIN is designed for a world where <em>understanding</em> metadata is the only thing that matters.
+        This document explains why — and what that conviction means in practice.
+      </p>
+    </header>
+
+    <!-- ── Two-column layout ── -->
+    <div class="article-layout">
+
+      <!-- ── Article body ── -->
+      <article class="article-body">
+
+        <h2 id="the-problem">1. The problem with data catalogs today</h2>
+
+        <p>
+          In 2026, most enterprise data catalogs still work the same way they did in 2014. You crawl your data sources,
+          extract table names and column names, optionally run a profiler, and store the results in a searchable index.
+          Then you ask analysts to write descriptions — and they don't, because they're busy — and you end up with a
+          catalog that is half-populated at best and actively misleading at worst.
+        </p>
+
+        <p>
+          The failure mode is consistent across vendors and tools. The catalog knows that a column named
+          <code>TRADE_AMT</code> exists in a table called <code>TRADE_BLOTTER</code>. It does not know whether that
+          amount is gross or net. It does not know whether it is pre-netting or post-netting. It does not know which
+          currency it is expressed in, or whether currency normalisation has already been applied. It does not know
+          whether the same concept appears in <code>SETTL_AMOUNT</code> in a different system — or whether those two
+          columns mean subtly different things.
+        </p>
+
+        <p>
+          A catalog that cannot answer those questions has not catalogued your data. It has catalogued the
+          <em>names</em> of your data. That is a meaningfully different and much less useful thing.
+        </p>
+
+        <div class="pull-quote">
+          <p>"Naming is not understanding. A catalog that knows the names of your columns knows nothing about your data."</p>
+        </div>
+
+        <p>
+          The consequence is not theoretical. The 70% of analyst time spent finding and understanding data — rather
+          than using it — is mostly spent resolving ambiguity that a well-designed catalog would have made unnecessary.
+          The lineage incidents that cause regulatory failures are mostly failures to know which upstream systems feed
+          which reports. The scramble before every audit is mostly a scramble to reconstruct meaning that was never
+          captured in the first place.
+        </p>
+
+        <p>
+          ODIN is built on the conviction that this is not an inevitable property of data catalogs. It is a design
+          choice — and it is the wrong one.
+        </p>
+
+        <h2 id="meaning">2. Meaning is not metadata</h2>
+
+        <p>
+          The word "metadata" has become so broad as to be nearly meaningless. Column names are metadata. Data types
+          are metadata. Row counts are metadata. Business glossary terms are metadata. Lineage edges are metadata.
+          Access control policies are metadata. All of these things are true, but treating them as equivalent obscures
+          the most important distinction in data management: the difference between structural metadata and semantic
+          metadata.
+        </p>
+
+        <p>
+          Structural metadata describes the shape of data. Semantic metadata describes its meaning. Most catalogs
+          capture the former thoroughly and the latter not at all.
+        </p>
+
+        <p>
+          Semantic metadata is harder to capture because it requires domain knowledge. Knowing that
+          <code>TRADE_AMT</code> corresponds to the financial concept of a monetary amount — specifically, a
+          pre-netting notional value expressed in settlement currency, as defined by the FIBO Financial Industry
+          Business Ontology — requires someone who understands both the data and the domain to make that connection
+          explicit.
+        </p>
+
+        <p>
+          The insight that shapes ODIN's design is that this connection can be encoded in a machine-readable form
+          that is both durable and reusable. A SKOS <code>exactMatch</code> triple linking a data element to a FIBO
+          concept IRI is not just a human-readable annotation. It is a formal assertion that survives system
+          migrations, survives personnel changes, and can be reasoned over by both humans and machines.
+        </p>
+
+        <div class="callout">
+          <div class="callout-label">Why SKOS?</div>
+          <p>
+            SKOS — the W3C Simple Knowledge Organization System — provides a small, well-defined set of matching
+            relationships: <code>exactMatch</code>, <code>closeMatch</code>, <code>relatedMatch</code>,
+            <code>broadMatch</code>, <code>narrowMatch</code>. These distinctions matter. A field that is
+            <em>exactly</em> a monetary amount is not the same as one that is <em>close</em> to a monetary amount.
+            The precision forces data stewards to be honest about the quality of the mapping — which is itself
+            valuable information.
+          </p>
+        </div>
+
+        <p>
+          This is why ODIN's logical model is built around semantic vocabulary mappings as a first-class concept,
+          not a bolt-on feature. The mapping from a physical column to a controlled vocabulary concept is the most
+          valuable artefact a data team can produce. Everything else — AI discovery, governance decisions, compliance
+          reporting — becomes more reliable when that artefact exists.
+        </p>
+
+        <h2 id="standards">3. Standards are load-bearing, not decorative</h2>
+
+        <p>
+          Open standards appear in data catalog marketing materials as a form of credentialing. "We support DCAT"
+          is often shorthand for "we can export JSON-LD if you ask nicely." This is not what ODIN means by standards
+          support.
+        </p>
+
+        <p>
+          In ODIN, the open standards <em>are</em> the metamodel. DCAT 3.0 defines what a dataset and a distribution
+          are. DPROD defines what a data product is and what it means for it to have input and output ports and an
+          owner and a lifecycle stage. CSV-W defines what a physical schema is. OpenLineage defines what a lineage
+          event is. SKOS defines what a vocabulary mapping relationship is.
+        </p>
+
+        <p>
+          This matters for two reasons. First, it means the data you put into ODIN is portable by construction.
+          You are not annotating your data assets in a proprietary schema that only ODIN can read. You are annotating
+          them in W3C-standard JSON-LD that any standards-aware tool can consume. If you replace ODIN with a
+          different catalog, or if ODIN is acquired and the business model changes, your metadata is not stranded.
+        </p>
+
+        <p>
+          Second, it means that the standards themselves do work in the system. FIBO is not a lookup table of
+          financial terms. It is a formal ontology with defined relationships between concepts — relationships that
+          ODIN can traverse. When you mark a field with <code>fibo-fnd-acc-cur:Currency</code>, ODIN knows that
+          currency is a subclass of a medium of exchange, which is a subclass of a financial instrument, and it can
+          expose that hierarchy in search and in AI context. The ontology is doing real work.
+        </p>
+
+        <div class="pull-quote">
+          <p>"Standards are not a compatibility feature. They are the architecture."</p>
+        </div>
+
+        <p>
+          This is why ODIN ships with FIBO FND, FBC, SEC, MD, and BP pre-loaded — not as a marketing claim, but
+          because a blank vocabulary store puts the mapping work back onto the teams least equipped to do it. The
+          hardest part of semantic annotation is choosing the right concept. Making the right concepts available
+          from the first login removes that friction.
+        </p>
+
+        <h2 id="lineage">4. Lineage is a first-class citizen</h2>
+
+        <p>
+          Data lineage has been described as a feature of data catalogs for at least fifteen years. In practice,
+          it is almost always an afterthought — a separate system, manually maintained, and perpetually out of date
+          by the time anyone looks at it.
+        </p>
+
+        <p>
+          The reason is architectural. Lineage is hard to capture automatically, hard to store efficiently, and
+          hard to query at the traversal depths that make it useful. Most catalogs solve this by not solving it —
+          they accept lineage metadata as an import, display it as a static diagram, and call it done.
+        </p>
+
+        <p>
+          ODIN treats lineage as a live graph query problem, not a display problem. The lineage-service stores
+          lineage events in Apache AGE — a graph extension to PostgreSQL — and exposes them via Cypher queries that
+          can traverse the graph in any direction to any depth. When you ask "what upstream systems feed this
+          regulatory report?", ODIN does not retrieve a pre-computed answer. It runs a graph traversal.
+        </p>
+
+        <p>
+          The practical consequence is impact analysis that is actually usable. Before changing a source table
+          schema, you can know — with confidence — every downstream report, model, view, and data product that
+          will be affected. This is the thing that prevents the lineage-related incidents that cost teams weeks
+          and regulators millions.
+        </p>
+
+        <div class="callout">
+          <div class="callout-label">DDL Parsing</div>
+          <p>
+            Not all lineage comes from runtime instrumentation. A significant fraction of enterprise lineage lives
+            in SQL DDL — <code>CREATE VIEW</code> statements that are never instrumented because they run inside
+            databases that pre-date OpenLineage. ODIN's harvest-service parses DDL from Snowflake, Teradata, and
+            Hive dialects via Apache Calcite and extracts lineage edges automatically. No pipeline modification
+            required.
+          </p>
+        </div>
+
+        <p>
+          Column-level lineage is not optional for regulated industries. BCBS 239 and GDPR both require the ability
+          to trace individual data elements from source to report. Row-level lineage tells you which table fed which
+          table. Column-level lineage tells you which specific transformation of which specific field produced which
+          specific value in which specific regulatory output. ODIN captures both.
+        </p>
+
+        <h2 id="ai">5. AI needs contracts, not descriptions</h2>
+
+        <p>
+          Every data platform vendor now claims to have AI features. Most of them have the same feature: a natural
+          language interface over a vector search index of column descriptions. You type a question, the system
+          retrieves the columns whose descriptions are most similar to your question, and returns them as results.
+        </p>
+
+        <p>
+          This works tolerably well for simple cases. It breaks down in exactly the cases where it matters most —
+          regulated industries, ambiguous column names, cross-system concept equivalence, agentic workflows.
+        </p>
+
+        <p>
+          The failure is not a failure of the AI models. It is a failure of the data layer beneath them. When you
+          ask "which fields contain a monetary amount?" and the system retrieves columns based on the word similarity
+          of their descriptions, you get columns that <em>mention</em> money. When you ask the same question
+          against a catalog where every monetary field is annotated with
+          <code>fibo-fnd-acc-cur:MonetaryAmount</code> via SKOS <code>exactMatch</code>, you get the columns that
+          <em>are</em> monetary amounts. The difference is precision — and in financial data, imprecision is a
+          compliance failure.
+        </p>
+
+        <div class="pull-quote">
+          <p>"AI stops guessing and starts reasoning the moment every data element carries a machine-readable concept IRI."</p>
+        </div>
+
+        <p>
+          The deeper issue is agentic AI. As AI systems move from answering questions to taking actions — writing
+          transformation pipelines, generating reports, triggering data product subscriptions — they need to know
+          exactly what data they are operating on. A description is a suggestion. A vocabulary mapping is a contract.
+        </p>
+
+        <p>
+          An agent that knows it is handling a <code>LegalEntityIdentifier</code> can apply the validation rules,
+          normalisation conventions, and regulatory reporting requirements that apply to LEIs — without being told.
+          An agent that knows it is handling "some kind of ID" cannot do any of those things reliably. Agents that
+          operate on contracts are auditable. Agents that operate on descriptions are not.
+        </p>
+
+        <h3>AI as a metadata producer, not just a consumer</h3>
+
+        <p>
+          ODIN's AI layer does more than answer questions. It is also a tool for accelerating the semantic
+          annotation work that makes the catalog valuable in the first place. For every logical model element, the
+          AI service can suggest a data classification level — Public, Internal, Confidential, or Restricted — and
+          generate a plain-English business description grounded in vocabulary mappings and surrounding context.
+        </p>
+
+        <p>
+          These suggestions are never applied automatically. A data owner reviews each one and accepts or rejects
+          it. This design choice is deliberate. AI-generated metadata that is applied without human review creates
+          a catalog that looks populated but is not trustworthy. Human-reviewed AI suggestions create a catalog
+          that is both efficiently populated and auditably correct.
+        </p>
+
+        <p>
+          The schema.org and FIBO IRIs that ODIN uses for vocabulary mappings appear extensively in the training
+          corpora of every major foundation model. Annotating a data element with a FIBO IRI puts it in semantic
+          proximity to everything the model already understands about that concept — zero prompt engineering
+          required.
+        </p>
+
+        <h2 id="ownership">6. Ownership is accountability made explicit</h2>
+
+        <p>
+          Data governance fails when accountability is unclear. The most common governance failure is not a
+          technical failure — it is an organisational one. Nobody knows who is responsible for a dataset, so
+          nobody maintains its metadata, nobody is notified when its schema changes, and nobody can be held
+          accountable when it causes a compliance failure.
+        </p>
+
+        <p>
+          ODIN treats data ownership as a first-class operational concept. Every dataset must have an owner — a
+          specific, named individual who is accountable for its metadata quality and access governance. Ownership
+          is not a label. It is enforced in the product: the data owner is the only person who can approve
+          AI-generated classification recommendations, accept ownership transfer proposals, and make governance
+          decisions about their datasets.
+        </p>
+
+        <p>
+          The role model is deliberately structured. Administrators can assign ownership directly. Data Governance
+          Officers can propose transfers and nominate owners. Data Stewards can curate metadata and propose
+          ownership changes. Data Owners hold the final accountability. These roles map to the ones that appear in
+          actual data governance frameworks and regulatory guidance.
+        </p>
+
+        <div class="callout">
+          <div class="callout-label">Why transfer proposals, not direct reassignment?</div>
+          <p>
+            Ownership transfers in ODIN require a proposal-and-approval step because unilateral reassignment
+            creates accountability gaps. If a governance officer can silently reassign ownership, the prior owner
+            has no knowledge that their accountability has ended and the new owner has no explicit acceptance of
+            responsibility. The proposal workflow creates a durable, auditable record of every transition — who
+            proposed it, who accepted it, and when.
+          </p>
+        </div>
+
+        <p>
+          The governance dashboard makes the state of ownership visible at a glance. Outstanding transfer
+          proposals, pending AI recommendation reviews, and a full activity feed for every dataset under a user's
+          ownership — these are operational tools for people who are actually accountable for data quality, and
+          who need to know when something requires their attention.
+        </p>
+
+        <h2 id="open">7. Open source is a governance prerequisite</h2>
+
+        <p>
+          There is a structural problem with proprietary data catalog vendors that is rarely stated plainly:
+          a tool that you cannot inspect is not a governance tool. It is a governance dependency.
+        </p>
+
+        <p>
+          When your metadata, your vocabulary mappings, your lineage graph, and your access policies live in a
+          proprietary system, your governance posture is hostage to that vendor's continued existence, pricing
+          decisions, and strategic direction. When the vendor is acquired, when the pricing model changes, when
+          the product is deprecated — and in a market with this much consolidation, all three happen regularly —
+          you are left rebuilding governance infrastructure from scratch.
+        </p>
+
+        <p>
+          This is a particular problem for regulated industries. You cannot credibly assert governance over data
+          whose catalog is a black box. You cannot audit a system you cannot inspect. You cannot demonstrate
+          compliance with a lineage record that is stored in a format you do not control.
+        </p>
+
+        <div class="pull-quote">
+          <p>"A governance tool you cannot inspect is not a governance tool. It is a governance dependency."</p>
+        </div>
+
+        <p>
+          ODIN is Apache 2.0 licensed. The source code is available. The schemas are documented. The APIs are
+          standardised. You can run it on your own infrastructure, inspect every decision it makes, and migrate
+          away from it at any time with your metadata intact — because your metadata is stored in W3C-standard
+          formats that do not require ODIN to read.
+        </p>
+
+        <p>Open source is not a business model choice. It is a governance design choice.</p>
+
+        <h2 id="api">8. The UI is a reference implementation</h2>
+
+        <p>
+          ODIN ships with two web interfaces: a producer UI for data stewards and governance teams, and a consumer
+          UI for analysts and data product subscribers. Both are built on the same REST API that every external
+          system uses. There are no private APIs, no undocumented endpoints, no capabilities that are only
+          available through the UI.
+        </p>
+
+        <p>
+          This is not a developer ergonomics decision. It is a commitment to a particular vision of what a data
+          catalog is. A catalog that hides capabilities behind a UI is a product. A catalog that exposes all
+          capabilities through a documented API is infrastructure.
+        </p>
+
+        <p>
+          Infrastructure can be composed. You can build an internal data portal that surfaces only the datasets
+          relevant to a specific business unit, with branding that matches your internal tools, with workflows
+          that match your team's actual processes — and it will use the same ODIN APIs that the reference UI uses.
+          You can build a VS Code extension that surfaces lineage and vocabulary mappings inline when an engineer
+          is writing a query. You can build a Slack bot that lets analysts ask questions in the tools they already
+          use.
+        </p>
+
+        <p>
+          The producer and consumer interfaces shipped with ODIN show what is possible. They are starting points,
+          not constraints.
+        </p>
+
+        <div class="section-divider"></div>
+
+        <h2 id="principles">9. The eight principles</h2>
+
+        <p>These are the commitments that every design decision in ODIN is tested against.</p>
+
+        <div class="principle">
+          <span class="principle-num">01</span>
+          <div class="principle-body">
+            <h4>Meaning over naming</h4>
+            <p>A catalog that knows the names of columns knows nothing about data. Semantic vocabulary mappings —
+            not free-text descriptions — are the primary unit of understanding in ODIN.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <span class="principle-num">02</span>
+          <div class="principle-body">
+            <h4>Standards as architecture</h4>
+            <p>DCAT, DPROD, OpenLineage, FIBO, SKOS, and CSV-W are the metamodel, not compliance badges. Every
+            metadata artefact in ODIN is stored in a format that can be consumed without ODIN.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <span class="principle-num">03</span>
+          <div class="principle-body">
+            <h4>Lineage is live, not archived</h4>
+            <p>Lineage is a graph query problem. ODIN never stores a pre-computed lineage diagram. It stores edges
+            and traverses them on demand — to any depth, in any direction.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <span class="principle-num">04</span>
+          <div class="principle-body">
+            <h4>AI as enrichment, human as authority</h4>
+            <p>AI suggestions accelerate metadata capture. They are never applied without human review. A catalog
+            that is efficiently populated but not auditably correct is worse than no catalog.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <span class="principle-num">05</span>
+          <div class="principle-body">
+            <h4>Contracts over descriptions</h4>
+            <p>A vocabulary mapping is a formal assertion. A description is a suggestion. AI agents — and
+            compliance frameworks — require the former. ODIN is designed to produce it at scale.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <span class="principle-num">06</span>
+          <div class="principle-body">
+            <h4>Ownership is enforced, not declared</h4>
+            <p>Accountability requires consequence. Data ownership in ODIN determines who can approve governance
+            actions, not just whose name appears next to a dataset name.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <span class="principle-num">07</span>
+          <div class="principle-body">
+            <h4>Open source is non-negotiable</h4>
+            <p>A governance tool you cannot inspect is a governance dependency. Apache 2.0 is not a business
+            model. It is a design constraint ensuring your metadata governance is never hostage to a vendor.</p>
+          </div>
+        </div>
+
+        <div class="principle">
+          <span class="principle-num">08</span>
+          <div class="principle-body">
+            <h4>The catalog is infrastructure</h4>
+            <p>The UI ships as a reference implementation. All capabilities are available through documented REST
+            APIs. ODIN is a platform you build on, not a product you use.</p>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h2 id="conclusion">Where this leads</h2>
+
+        <p>
+          The data governance problem is not going to be solved by better UI design or more aggressive sales
+          motions. It will be solved when the infrastructure underneath governance tooling is semantically rich
+          enough to support the claims that governance frameworks make — that data has documented meaning,
+          documented lineage, documented ownership, and documented access control, in a form that can be
+          verified by machines and audited by regulators.
+        </p>
+
+        <p>
+          Every major AI research lab is investing in knowledge graphs and structured data because they have
+          discovered what data governance practitioners have known for two decades: unstructured text retrieval
+          has a ceiling. The organisations that will get the most from AI over the next decade are the ones
+          building semantic structure into their data now — not as a preparation for AI, but because semantic
+          structure is what makes data governable, and governable data is what makes AI trustworthy.
+        </p>
+
+        <p>
+          ODIN gives you that structure today, on top of the data you already have. The design choices described
+          in this document are not arbitrary. They are the result of a conviction that the catalog layer is the
+          right place to build the semantic foundation that everything else depends on — and that building it on
+          open standards, with open source code, is the only approach that is credible as governance
+          infrastructure.
+        </p>
+
+        <div class="pull-quote">
+          <p>"The organisations that will get the most from AI in the next decade are the ones who spent the last
+          decade building semantic structure into their data."</p>
+        </div>
+
+        <div class="article-footer">
+          <a href="./index.html" class="back-link">← Back to Blog</a>
+          <span class="footer-copy">
+            ODIN Catalog · Apache 2.0 ·
+            <a href="https://github.com/ODIN-Data-Intelligence">GitHub</a>
+          </span>
+        </div>
+
+      </article>
+
+      <!-- ── Sticky side TOC ── -->
+      <aside class="article-sidebar" aria-label="Article navigation">
+        <div class="toc-card">
+          <div class="toc-label">Contents</div>
+          <ol class="toc-list">
+            <li><a href="#the-problem">The problem today</a></li>
+            <li><a href="#meaning">Meaning vs. metadata</a></li>
+            <li><a href="#standards">Standards as architecture</a></li>
+            <li><a href="#lineage">Lineage first-class</a></li>
+            <li><a href="#ai">AI needs contracts</a></li>
+            <li><a href="#ownership">Ownership &amp; accountability</a></li>
+            <li><a href="#open">Open source prerequisite</a></li>
+            <li><a href="#api">UI as reference impl</a></li>
+            <li><a href="#principles">The eight principles</a></li>
+            <li><a href="#conclusion">Where this leads</a></li>
+          </ol>
+          <div class="toc-meta">
+            <div class="toc-meta-item">
+              <span class="toc-meta-dot" style="background:var(--indigo-lt)"></span>
+              18 min read
+            </div>
+            <div class="toc-meta-item">
+              <span class="toc-meta-dot" style="background:var(--muted)"></span>
+              31 May 2026
+            </div>
+            <div class="toc-meta-item">
+              <span class="toc-meta-dot" style="background:var(--emerald)"></span>
+              Design
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div><!-- /article-layout -->
+  </div><!-- /page-outer -->
+
+  <script>
+    // Reading progress bar
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const pct = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+      document.getElementById('progress').style.width = (pct * 100) + '%';
+    });
+
+    // Active TOC link via IntersectionObserver
+    const headings = document.querySelectorAll('.article-body h2[id], .article-body h2[id]');
+    const tocLinks = document.querySelectorAll('.toc-list a');
+
+    const tocMap = {};
+    tocLinks.forEach(a => { tocMap[a.getAttribute('href').slice(1)] = a; });
+
+    let current = '';
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          current = e.target.id;
+          tocLinks.forEach(a => a.classList.remove('active'));
+          if (tocMap[current]) tocMap[current].classList.add('active');
+        }
+      });
+    }, { rootMargin: '-60px 0px -60% 0px', threshold: 0 });
+
+    document.querySelectorAll('.article-body h2[id]').forEach(h => io.observe(h));
+  </script>
+
+</body>
+</html>

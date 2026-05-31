@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Blog — ODIN Catalog</title>
+  <meta name="description" content="Design thinking, engineering decisions, and perspectives on data governance from the ODIN Catalog team." />
+  <meta name="author" content="ODIN Catalog" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#060912" />
+
+  <link rel="canonical" href="https://odin-catalog.com/blog/" />
+  <link rel="icon" type="image/png" href="../logo-dark.png" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ODIN Catalog" />
+  <meta property="og:title" content="Blog — ODIN Catalog" />
+  <meta property="og:description" content="Design thinking, engineering decisions, and perspectives on data governance from the ODIN Catalog team." />
+  <meta property="og:url" content="https://odin-catalog.com/blog/" />
+  <meta property="og:image" content="https://odin-catalog.com/logo-light.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #060912;
+      --surface:  #0d1321;
+      --surface2: #111827;
+      --border:   rgba(255,255,255,0.07);
+      --border2:  rgba(255,255,255,0.12);
+      --indigo:   #6366f1;
+      --indigo-lt:#818cf8;
+      --cyan:     #22d3ee;
+      --violet:   #a78bfa;
+      --amber:    #f59e0b;
+      --text:     #f1f5f9;
+      --muted:    #94a3b8;
+      --subtle:   #475569;
+    }
+
+    html { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+    body { min-height: 100vh; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(6,9,18,0.85);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 60px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .logo-img { height: 32px; width: 32px; object-fit: contain; border-radius: 7px; }
+    .logo-name { font-weight: 700; font-size: 15px; letter-spacing: -0.3px; }
+    .alpha-pill {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--amber); border: 1px solid rgba(245,158,11,0.4);
+      background: rgba(245,158,11,0.08); padding: 2px 8px; border-radius: 99px; margin-left: 8px;
+    }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a { font-size: 14px; color: var(--muted); font-weight: 500; transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-cta {
+      font-size: 13px; font-weight: 600; background: var(--indigo);
+      color: #fff; padding: 7px 16px; border-radius: 8px; transition: background 0.15s;
+    }
+    .nav-cta:hover { background: #4f52d0; }
+
+    /* ── Page header ── */
+    .page-header {
+      padding: 120px 24px 64px;
+      max-width: 1200px; margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--indigo-lt); margin-bottom: 12px;
+    }
+    .page-title {
+      font-size: clamp(36px, 5vw, 56px); font-weight: 900;
+      letter-spacing: -2px; line-height: 1.05; margin-bottom: 16px;
+    }
+    .page-sub { font-size: 18px; color: var(--muted); max-width: 520px; line-height: 1.65; }
+
+    /* ── Posts grid ── */
+    .posts-wrap {
+      max-width: 1200px; margin: 0 auto;
+      padding: 64px 24px 96px;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .post-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex; flex-direction: column; gap: 16px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .post-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .post-meta {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .post-tag {
+      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 6px;
+    }
+    .post-date { font-size: 12px; color: var(--subtle); }
+    .post-read { font-size: 12px; color: var(--subtle); }
+
+    .post-card h2 {
+      font-size: 20px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.25;
+      color: var(--text);
+    }
+    .post-card p {
+      font-size: 14px; color: var(--muted); line-height: 1.65; flex: 1;
+    }
+    .post-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: var(--indigo-lt);
+      margin-top: 4px; transition: gap 0.15s;
+    }
+    .post-link:hover { gap: 10px; }
+
+    /* ── Featured post ── */
+    .post-card.featured {
+      grid-column: 1 / -1;
+      flex-direction: row; align-items: flex-start; gap: 40px;
+    }
+    .post-card.featured .post-content { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+    .post-card.featured h2 { font-size: clamp(22px, 3vw, 32px); }
+    .post-card.featured p { font-size: 16px; }
+    .featured-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--cyan); background: rgba(34,211,238,0.08);
+      border: 1px solid rgba(34,211,238,0.25); padding: 4px 12px; border-radius: 99px;
+      margin-bottom: 4px; align-self: flex-start;
+    }
+    .featured-badge span {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--cyan);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .featured-graphic {
+      width: 200px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(34,211,238,0.08));
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 64px; min-height: 160px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border); padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+    .footer-right { font-size: 13px; color: var(--subtle); display: flex; gap: 20px; align-items: center; }
+    .footer-right a { color: var(--subtle); transition: color 0.15s; }
+    .footer-right a:hover { color: var(--muted); }
+
+    .visible { opacity: 1 !important; transform: translateY(0) !important; }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .post-card.featured { flex-direction: column; }
+      .featured-graphic { width: 100%; min-height: 100px; }
+    }
+  </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CLPM26RP7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-9CLPM26RP7');
+  </script>
+</head>
+
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="../" class="nav-logo">
+        <img src="../logo-dark.png" alt="ODIN Catalog" class="logo-img" />
+        <span class="logo-name">ODIN Catalog</span>
+        <span class="alpha-pill">Alpha</span>
+      </a>
+      <div class="nav-links">
+        <a href="../#features">Features</a>
+        <a href="../#standards">Standards</a>
+        <a href="../#lineage">Lineage</a>
+        <a href="./index.html" class="active">Blog</a>
+        <a href="https://docs.odin-catalog.com/">Docs</a>
+        <a href="https://github.com/ODIN-Data-Intelligence" class="nav-cta">GitHub →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Page header ── -->
+  <div class="page-header">
+    <p class="page-label">From the team</p>
+    <h1 class="page-title">Blog</h1>
+    <p class="page-sub">Design thinking, engineering decisions, and perspectives on data governance from the ODIN Catalog team.</p>
+  </div>
+
+  <!-- ── Posts ── -->
+  <div class="posts-wrap">
+    <div class="posts-grid">
+
+      <!-- Featured: Manifesto -->
+      <a href="./manifesto.html" class="post-card featured">
+        <div class="featured-graphic">📜</div>
+        <div class="post-content">
+          <div>
+            <span class="featured-badge"><span></span>Latest post</span>
+          </div>
+          <div class="post-meta">
+            <span class="post-tag" style="background:rgba(99,102,241,0.12);color:#a5b4fc">Design</span>
+            <span class="post-date">31 May 2026</span>
+            <span class="post-read">· 18 min read</span>
+          </div>
+          <h2>The ODIN Design Manifesto</h2>
+          <p>
+            The data governance tools we use today were designed for a world where <em>having</em> metadata was
+            enough. ODIN is designed for a world where <em>understanding</em> metadata is the only thing that matters.
+            This document explains why — covering meaning vs. naming, standards as architecture, lineage as a live
+            graph, AI contracts, enforced ownership, and the eight principles every design decision is tested against.
+          </p>
+          <span class="post-link">Read the manifesto →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="../logo-dark.png" alt="ODIN Catalog" class="logo-img" />
+        ODIN Catalog
+        <span class="alpha-pill">Alpha</span>
+      </div>
+      <div class="footer-right">
+        <a href="https://github.com/ODIN-Data-Intelligence">GitHub</a>
+        <a href="https://docs.odin-catalog.com/">Docs</a>
+        <a href="../#features">Features</a>
+        <a href="../#alpha">Early Access</a>
+        <span>Apache 2.0 License</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.08 }
+    );
+    document.querySelectorAll('.post-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(16px)';
+      el.style.transition = 'opacity 0.4s ease, transform 0.4s ease, border-color 0.2s, box-shadow 0.2s';
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>

@@ -75,7 +75,9 @@
           "Data product governance with DPROD standard",
           "AI-powered discovery with RAG and pgvector",
           "Automated metadata harvesting from Snowflake, AWS Glue, Teradata, DCAT HTTP",
-          "Faceted semantic search with OpenSearch and FIBO concept filters"
+          "Faceted semantic search with OpenSearch and FIBO concept filters",
+          "Data ownership and governance with role-based assignment and transfer proposals",
+          "AI metadata enrichment — classification recommendations and description generation per logical model element"
         ]
       }
     ]
@@ -1172,6 +1174,7 @@
         <a href="#api">API-First</a>
         <a href="#alpha">Early Access</a>
         <a href="https://docs.odin-catalog.com/">Docs</a>
+        <a href="./blog/">Blog</a>
         <a href="https://github.com/ODIN-Data-Intelligence" class="nav-cta">GitHub →</a>
       </div>
     </div>
@@ -1197,7 +1200,7 @@
 
     <p class="hero-sub">
       ODIN is an open-source data catalog built on W3C standards.
-      Business semantics, end-to-end lineage, and AI-powered discovery —
+      Business semantics, end-to-end lineage, AI-powered discovery, and accountable data ownership —
       designed for enterprises where data governance isn't optional.
     </p>
 
@@ -1358,6 +1361,36 @@
             <span class="tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">FIBO Facets</span>
             <span class="tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">Autocomplete</span>
             <span class="tag" style="background:rgba(59,130,246,0.1);color:#93c5fd">Semantic</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(244,63,94,0.1)">🏛️</div>
+          <h3>Data Ownership &amp; Governance</h3>
+          <p>Assign accountable owners to every dataset with a structured role model — Administrator, Data Owner, Data
+            Steward, and Data Governance Officer. Ownership transfers go through a proposal-and-approval workflow so
+            accountability is never lost. A governance dashboard surfaces pending tasks, outstanding proposals, and a
+            full activity feed for each user.</p>
+          <div class="feature-tags">
+            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Role-Based</span>
+            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Transfer Proposals</span>
+            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Audit Trail</span>
+            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Activity Feed</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(16,185,129,0.1)">✨</div>
+          <h3>AI Metadata Enrichment</h3>
+          <p>Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model
+            element, the AI service suggests a data classification level (Public through Restricted) and generates a
+            plain-English business description — both grounded in vocabulary mappings and existing context. Data owners
+            review and accept or reject each suggestion in one click.</p>
+          <div class="feature-tags">
+            <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Classification AI</span>
+            <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Description Gen</span>
+            <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Owner-Gated</span>
+            <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Spring AI</span>
           </div>
         </div>
 
@@ -1779,7 +1812,7 @@
         </div>
         <div class="arch-card">
           <h4 style="color:#fca5a5">identity-service</h4>
-          <p>Keycloak OAuth2/OIDC integration. ABAC policies. API keys. Multi-tenant isolation.</p>
+          <p>Keycloak OAuth2/OIDC. Role-based access (Administrator, Data Owner, Steward, Governance). User management with Keycloak sync. API keys. Multi-tenant isolation.</p>
         </div>
       </div>
       <div class="arch-label" style="margin-top:40px">Data Stores</div>
@@ -2003,6 +2036,7 @@
       <div class="footer-right">
         <a href="https://github.com/ODIN-Data-Intelligence">GitHub</a>
         <a href="https://docs.odin-catalog.com/">Docs</a>
+        <a href="./blog/">Blog</a>
         <a href="#features">Features</a>
         <a href="#standards">Standards</a>
         <a href="#alpha">Early Access</a>
