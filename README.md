@@ -73,9 +73,14 @@ Assign accountable owners to every dataset with a structured role model — Admi
 `Role-Based` `Transfer Proposals` `Audit Trail` `Activity Feed`
 
 ### AI Metadata Enrichment
-Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model element, the AI service suggests a data classification level (Public through Restricted) and generates a plain-English business description — both grounded in vocabulary mappings and existing context. Data owners review and accept or reject each suggestion in one click.
+Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model element, the AI service suggests a data classification level (Public through Restricted), a plain-English business description, and up to five SKOS vocabulary concept mappings — all grounded in existing context and vocabulary knowledge. Data owners review and accept or reject each suggestion in one click, individually or in bulk across the entire model.
 
-`Classification AI` `Description Gen` `Owner-Gated` `Spring AI`
+`Classification AI` `Description Gen` `Vocab Concepts` `Owner-Gated` `Spring AI`
+
+### ODRL Terms of Use
+Once elements are classified and vocabulary-mapped, ODIN automatically derives a machine-readable [ODRL](https://www.w3.org/TR/odrl-model/) terms-of-use policy for every dataset. The access level — OPEN, INTERNAL_ONLY, RESTRICTED, or HIGHLY_RESTRICTED — follows directly from the most sensitive element classification. Applicable regulatory frameworks (MiFID II, EMIR, GDPR, Basel III) are inferred from FIBO vocabulary mappings and dataset keywords. Consumers see the terms in plain English; data owners accept and lock the policy with one click. No policy writing required.
+
+`ODRL` `Access Levels` `Regulatory Signals` `Owner-Gated`
 
 ---
 
@@ -91,6 +96,7 @@ ODIN's metamodel is grounded in W3C, OMG, and FIBO standards. Your metadata is p
 | **OpenLineage** | Linux Foundation | Open standard for data lineage collection. Compatible with Spark, dbt, Airflow, Flink, and 30+ integrations out of the box. |
 | **FIBO** | EDM Council | Financial Industry Business Ontology. Industry-standard vocabulary for financial instruments, parties, contracts, and processes. FND · FBC · SEC · MD · BP |
 | **SKOS** | W3C | Simple Knowledge Organization System. `exactMatch`, `closeMatch`, `relatedMatch` - precise semantic relationships between data elements and concepts. |
+| **ODRL** | W3C | Open Digital Rights Language. Terms-of-use policies derived from element classifications and vocabulary concepts — permissions, prohibitions, obligations, and access levels. |
 
 ---
 
