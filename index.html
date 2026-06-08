@@ -77,7 +77,7 @@
           "Automated metadata harvesting from Snowflake, AWS Glue, Teradata, DCAT HTTP",
           "Faceted semantic search with OpenSearch and FIBO concept filters",
           "Data ownership and governance with role-based assignment and transfer proposals",
-          "AI metadata enrichment — classification, description, and vocabulary concept recommendations per logical model element",
+          "AI metadata enrichment — classification, description, and selectable vocabulary concept recommendations per logical model element",
           "ODRL terms of use — access-level policy derived from element classifications and FIBO vocabulary mappings"
         ]
       }
@@ -1328,12 +1328,13 @@
           <h3>End-to-End Data Lineage</h3>
           <p>Ingest lineage from any OpenLineage-compatible tool (Spark, dbt, Airflow). Parse SQL DDL across Snowflake,
             Teradata, and Hive dialects. Traverse multi-hop graphs with Apache AGE — upstream, downstream, and
-            column-level.</p>
+            column-level. Expand dataset nodes to see logical data elements inline; hover an element to highlight its
+            upstream edge path.</p>
           <div class="feature-tags">
             <span class="tag" style="background:rgba(34,211,238,0.1);color:#67e8f9">OpenLineage</span>
             <span class="tag" style="background:rgba(34,211,238,0.1);color:#67e8f9">Apache AGE</span>
             <span class="tag" style="background:rgba(34,211,238,0.1);color:#67e8f9">DDL Parsing</span>
-            <span class="tag" style="background:rgba(34,211,238,0.1);color:#67e8f9">Column-Level</span>
+            <span class="tag" style="background:rgba(34,211,238,0.1);color:#67e8f9">Expandable Nodes</span>
           </div>
         </div>
 
@@ -1413,8 +1414,9 @@
           <p>Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model
             element, the AI service suggests a data classification level (Public through Restricted), a plain-English
             business description, and up to five SKOS vocabulary concept mappings from FIBO and schema.org — all grounded
-            in existing context. Data owners review and accept or reject each suggestion individually or in bulk across
-            the entire model.</p>
+            in existing context. Data owners review and accept or reject each suggestion individually or in bulk. For
+            vocabulary concepts, each suggested concept is individually selectable — owners cherry-pick the relevant
+            ones and discard the rest in a single action.</p>
           <div class="feature-tags">
             <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Classification AI</span>
             <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Description Gen</span>
@@ -1553,6 +1555,17 @@
                 <div style="font-size:14px;font-weight:600;margin-bottom:3px">Impact analysis</div>
                 <div style="font-size:13px;color:var(--muted)">Before changing a source table, know every downstream
                   report, model, and data product that will be affected.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px">
+              <div
+                style="width:36px;height:36px;border-radius:10px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">
+                ▤</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;margin-bottom:3px">Expandable nodes with data elements</div>
+                <div style="font-size:13px;color:var(--muted)">Expand any dataset node in the graph to see its logical
+                  data elements inline. Hovering an element highlights its incoming edges — instantly showing which
+                  upstream sources feed that field.</div>
               </div>
             </div>
           </div>
@@ -1940,8 +1953,8 @@
               <span class="api-key">"totalHits"</span>: <span class="api-num">11</span>
               }
 
-              <span class="api-cm"># Upstream lineage — 5 hops</span>
-              <span class="api-kw">GET</span> <span class="api-url">/api/v1/datasets/prod/trade_blotter/lineage</span>
+              <span class="api-cm"># Upstream lineage — 5 hops (UUID from /datasets/lookup)</span>
+              <span class="api-kw">GET</span> <span class="api-url">/api/v1/datasets/{lineage-uuid}/lineage</span>
               <span class="api-url">?direction=upstream&amp;depth=5</span>
 
               <span class="api-cm"># AI — stream an answer over SSE</span>
