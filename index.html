@@ -7,7 +7,7 @@
 
   <title>ODIN Catalog — Open Data Intelligence for the Modern Enterprise</title>
   <meta name="description"
-    content="Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, ODRL terms of use, and data product governance — all in one platform." />
+    content="Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, ODRL/ODRE policy enforcement, and data product governance — all in one platform." />
   <meta name="author" content="ODIN Catalog" />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#060912" />
@@ -21,7 +21,7 @@
   <meta property="og:site_name" content="ODIN Catalog" />
   <meta property="og:title" content="ODIN Catalog — Open Data Intelligence for the Modern Enterprise" />
   <meta property="og:description"
-    content="Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, ODRL terms of use, and data product governance — all in one platform." />
+    content="Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, ODRL/ODRE policy enforcement, and data product governance — all in one platform." />
   <meta property="og:url" content="https://odin-catalog.com/" />
   <meta property="og:image" content="https://odin-catalog.com/logo-light.png" />
   <meta property="og:image:width" content="1200" />
@@ -32,7 +32,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ODIN Catalog — Open Data Intelligence for the Modern Enterprise" />
   <meta name="twitter:description"
-    content="Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, and data product governance." />
+    content="Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, ODRL/ODRE policy enforcement, and data product governance." />
   <meta name="twitter:image" content="https://odin-catalog.com/logo-light.png" />
   <meta name="twitter:image:alt" content="ODIN Catalog — Open Data Intelligence" />
 
@@ -62,7 +62,7 @@
         "name": "ODIN Catalog",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Any",
-        "description": "Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, and data product governance.",
+        "description": "Open-source data catalog built on W3C standards. Semantic lineage, FIBO vocabulary mappings, AI-powered discovery, ODRL/ODRE policy enforcement, and data product governance.",
         "url": "https://odin-catalog.com/",
         "downloadUrl": "https://github.com/ODIN-Data-Intelligence/odin",
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
@@ -77,8 +77,9 @@
           "Automated metadata harvesting from Snowflake, AWS Glue, Teradata, DCAT HTTP",
           "Faceted semantic search with OpenSearch and FIBO concept filters",
           "Data ownership and governance with role-based assignment and transfer proposals",
-          "AI metadata enrichment — classification, description, and selectable vocabulary concept recommendations per logical model element",
-          "ODRL terms of use — access-level policy derived from element classifications and FIBO vocabulary mappings"
+          "AI metadata enrichment — classification, description, selectable vocabulary concept recommendations, and PII/direct-identifier detection per logical model element using W3C DPV-PD",
+          "ODRL terms of use — access-level policy derived from element classifications, FIBO vocabulary mappings, and PII element signals (FCRA, GDPR, MiFID II, EMIR, Basel III detection)",
+          "ODRE policy enforcement — dedicated Policy Decision Point (policy-service) evaluates ODRL policies at request time using ODRE Algorithm 1; supports A-Level (static) and B1-Level (runtime variable injection) policies"
         ]
       }
     ]
@@ -1255,6 +1256,8 @@
       <div class="std-badge"><span class="dot" style="background:#a78bfa"></span>FIBO</div>
       <div class="std-badge"><span class="dot" style="background:#f59e0b"></span>CSV-W</div>
       <div class="std-badge"><span class="dot" style="background:#f43f5e"></span>ODRL</div>
+      <div class="std-badge"><span class="dot" style="background:#f97316"></span>ODRE</div>
+      <div class="std-badge"><span class="dot" style="background:#ec4899"></span>W3C DPV</div>
       <div class="std-badge"><span class="dot" style="background:#f43f5e"></span>Apache AGE</div>
       <div class="std-badge"><span class="dot" style="background:#3b82f6"></span>Spring AI</div>
     </div>
@@ -1413,32 +1416,39 @@
           <h3>AI Metadata Enrichment</h3>
           <p>Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model
             element, the AI service suggests a data classification level (Public through Restricted), a plain-English
-            business description, and up to five SKOS vocabulary concept mappings from FIBO and schema.org — all grounded
-            in existing context. Data owners review and accept or reject each suggestion individually or in bulk. For
-            vocabulary concepts, each suggested concept is individually selectable — owners cherry-pick the relevant
-            ones and discard the rest in a single action.</p>
+            business description, up to five SKOS vocabulary concept mappings from FIBO and schema.org, and
+            <strong>PII/direct-identifier indicators</strong> — detected using W3C DPV-PD vocabulary IRIs and field name
+            heuristics. Data owners review and accept or reject each suggestion individually or in bulk. Vocabulary
+            concept chips are individually selectable; PII flags use the same owner-gated accept/reject flow.</p>
           <div class="feature-tags">
             <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Classification AI</span>
             <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Description Gen</span>
             <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Vocab Concepts</span>
+            <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">PII Detection</span>
             <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7">Owner-Gated</span>
           </div>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon" style="background:rgba(244,63,94,0.1)">📋</div>
-          <h3>ODRL Terms of Use</h3>
+          <h3>ODRL Terms of Use &amp; ODRE Enforcement</h3>
           <p>Once elements are classified and vocabulary-mapped, ODIN automatically derives a machine-readable
             <a href="https://www.w3.org/TR/odrl-model/" style="color:inherit;text-decoration:underline">ODRL</a>
             terms-of-use policy for every dataset. The access level — OPEN, INTERNAL_ONLY, RESTRICTED, or
             HIGHLY_RESTRICTED — follows directly from the most sensitive element classification. Applicable regulatory
-            frameworks (MiFID II, EMIR, GDPR, Basel III) are inferred from FIBO vocabulary mappings and dataset
-            keywords. Consumers see terms in plain English; data owners accept and lock the policy with one click.</p>
+            frameworks (MiFID II, EMIR, GDPR, Basel III, <strong>FCRA</strong>) are inferred from FIBO vocabulary
+            mappings, dataset keywords, and PII element signals — when any element is flagged as personal data or a
+            direct identifier, the <code>HAS_PII_ELEMENTS</code> signal fires and POLICY_STRICT rules are automatically
+            added. Consumers see terms in plain English; data owners accept and lock the policy with one click. A
+            dedicated <strong>policy-service</strong> then enforces those policies at request time using the ODRE
+            algorithm — returning a structured <code>UsageDecision</code> (granted / denied / delegated) rather than
+            leaving enforcement to convention.</p>
           <div class="feature-tags">
             <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">ODRL</span>
+            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">ODRE</span>
             <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Access Levels</span>
-            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Regulatory Signals</span>
-            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Owner-Gated</span>
+            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">FCRA · GDPR · MiFID II</span>
+            <span class="tag" style="background:rgba(244,63,94,0.1);color:#fda4af">Policy Decision Point</span>
           </div>
         </div>
 
@@ -1505,11 +1515,28 @@
         </div>
         <div class="std-card">
           <div class="std-name">W3C</div>
+          <div class="std-title">DPV</div>
+          <div class="std-desc">Data Privacy Vocabulary. A taxonomy of personal data categories, processing purposes,
+            legal bases, and data subject rights. DPV-PD concept IRIs are used to AI-detect PII and direct-identifier
+            fields on logical model elements — without requiring manual annotation.</div>
+          <span class="std-badge-sm" style="background:rgba(236,72,153,0.12);color:#f9a8d4">Personal Data · Processing · Legal Basis</span>
+        </div>
+        <div class="std-card">
+          <div class="std-name">W3C</div>
           <div class="std-title">ODRL</div>
           <div class="std-desc">Open Digital Rights Language. Terms-of-use policies — permissions, prohibitions,
             obligations — derived from element classifications and vocabulary concept mappings. No manual policy
             authoring required.</div>
           <span class="std-badge-sm" style="background:rgba(244,63,94,0.12);color:#fda4af">Permissions · Prohibitions · Obligations</span>
+        </div>
+        <div class="std-card">
+          <div class="std-name">Academic</div>
+          <div class="std-title">ODRE</div>
+          <div class="std-desc">Open Digital Rights Enforcement (Cimmino et al., 2025). Algorithm 1 evaluates ODRL
+            policies at request time and returns a <code>UsageDecision</code> — granted, denied, or delegated —
+            rather than leaving interpretation to each consumer. ODIN's policy-service implements A-Level (static)
+            and B1-Level (variable injection) enforcement.</div>
+          <span class="std-badge-sm" style="background:rgba(249,115,22,0.12);color:#fdba74">A-Level · B1-Level · UsageDecision</span>
         </div>
       </div>
     </div>
@@ -1851,7 +1878,7 @@
       <p class="section-label">Architecture</p>
       <h2>Open source. API-first. <br />Open Standards.</h2>
       <p class="section-sub" style="margin:0 auto">
-        6 microservices. Deploy to Kubernetes, Docker Compose, or your cloud
+        7 microservices. Deploy to Kubernetes, Docker Compose, or your cloud
         of choice. No managed service required.
       </p>
 
@@ -1880,6 +1907,10 @@
         <div class="arch-card">
           <h4 style="color:#fca5a5">identity-service</h4>
           <p>Keycloak OAuth2/OIDC. Role-based access (Administrator, Data Owner, Steward, Governance). User management with Keycloak sync. API keys. Multi-tenant isolation.</p>
+        </div>
+        <div class="arch-card">
+          <h4 style="color:#fdba74">policy-service</h4>
+          <p>ODRL policy registry + ODRE enforcement engine (PDP). Evaluates A-Level and B1-Level policies at request time. Kafka-driven sync from dataset changes. Evaluation audit log.</p>
         </div>
       </div>
       <div class="arch-label" style="margin-top:40px">Data Stores</div>
@@ -2074,12 +2105,12 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:48px">
           <div
             style="text-align:center;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface2)">
-            <div style="font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--cyan)">6</div>
+            <div style="font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--cyan)">7</div>
             <div style="font-size:13px;color:var(--muted);margin-top:4px">Microservices, all open source</div>
           </div>
           <div
             style="text-align:center;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface2)">
-            <div style="font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--emerald)">6</div>
+            <div style="font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--emerald)">7</div>
             <div style="font-size:13px;color:var(--muted);margin-top:4px">Open standards at the core</div>
           </div>
           <div
