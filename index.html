@@ -1430,6 +1430,25 @@
         </div>
 
         <div class="feature-card">
+          <div class="feature-icon" style="background:rgba(167,139,250,0.1)">🔁</div>
+          <h3>Agentic Metadata Review</h3>
+          <p>For higher-quality enrichment, ODIN runs a two-agent <strong>proposer/reviewer</strong> loop over a logical
+            model. A proposer drafts a description, classification, vocabulary mappings, and PII flags for every element;
+            a reviewer then audits that draft against the dataset's full DCAT context and returns a verdict —
+            <strong>APPROVE or REJECT</strong>, with per-issue comments. The proposer revises on each rejection, up to ten
+            iterations, and a <strong>long-term review memory</strong> carries lessons from past runs into new ones to
+            speed convergence. Progress streams live over Server-Sent Events; the converged result is persisted to the
+            model's elements for the data owner to accept or reject.</p>
+          <div class="feature-tags">
+            <span class="tag" style="background:rgba(167,139,250,0.1);color:#c4b5fd">Proposer/Reviewer</span>
+            <span class="tag" style="background:rgba(167,139,250,0.1);color:#c4b5fd">Self-Critique</span>
+            <span class="tag" style="background:rgba(167,139,250,0.1);color:#c4b5fd">Long-Term Memory</span>
+            <span class="tag" style="background:rgba(167,139,250,0.1);color:#c4b5fd">SSE Streaming</span>
+            <span class="tag" style="background:rgba(167,139,250,0.1);color:#c4b5fd">Owner-Gated</span>
+          </div>
+        </div>
+
+        <div class="feature-card">
           <div class="feature-icon" style="background:rgba(244,63,94,0.1)">📋</div>
           <h3>ODRL Terms of Use &amp; ODRE Enforcement</h3>
           <p>Once elements are classified and vocabulary-mapped, ODIN automatically derives a machine-readable
@@ -2110,7 +2129,7 @@
           </div>
           <div
             style="text-align:center;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface2)">
-            <div style="font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--emerald)">7</div>
+            <div style="font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--emerald)">9</div>
             <div style="font-size:13px;color:var(--muted);margin-top:4px">Open standards at the core</div>
           </div>
           <div

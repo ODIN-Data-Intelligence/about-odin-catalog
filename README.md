@@ -8,7 +8,7 @@
 
 ODIN is an open-source data catalog built on W3C standards. Business semantics, end-to-end lineage, AI-powered discovery, and accountable data ownership - designed for enterprises where data governance isn't optional.
 
-**Standards:** DCAT 3.0 · DPROD · OpenLineage · FIBO · CSV-W · Apache AGE · Spring AI
+**Standards:** DCAT 3.0 · DPROD · OpenLineage · FIBO · CSV-W · SKOS · ODRL · ODRE · W3C DPV · Apache AGE · Spring AI
 
 ---
 
@@ -73,14 +73,19 @@ Assign accountable owners to every dataset with a structured role model — Admi
 `Role-Based` `Transfer Proposals` `Audit Trail` `Activity Feed`
 
 ### AI Metadata Enrichment
-Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model element, the AI service suggests a data classification level (Public through Restricted), a plain-English business description, and up to five SKOS vocabulary concept mappings — all grounded in existing context and vocabulary knowledge. Data owners review and accept or reject each suggestion in one click, individually or in bulk across the entire model.
+Beyond natural-language search, ODIN's AI layer actively improves metadata quality. For every logical model element, the AI service suggests a data classification level (Public through Restricted), a plain-English business description, up to five SKOS vocabulary concept mappings, and **PII / direct-identifier indicators** — inferred from W3C DPV-PD concept IRIs and field-name heuristics. Data owners review and accept or reject each suggestion in one click, individually or in bulk across the entire model.
 
-`Classification AI` `Description Gen` `Vocab Concepts` `Owner-Gated` `Spring AI`
+`Classification AI` `Description Gen` `Vocab Concepts` `PII Detection` `Owner-Gated` `Spring AI`
 
-### ODRL Terms of Use
-Once elements are classified and vocabulary-mapped, ODIN automatically derives a machine-readable [ODRL](https://www.w3.org/TR/odrl-model/) terms-of-use policy for every dataset. The access level — OPEN, INTERNAL_ONLY, RESTRICTED, or HIGHLY_RESTRICTED — follows directly from the most sensitive element classification. Applicable regulatory frameworks (MiFID II, EMIR, GDPR, Basel III) are inferred from FIBO vocabulary mappings and dataset keywords. Consumers see the terms in plain English; data owners accept and lock the policy with one click. No policy writing required.
+### Agentic Metadata Review
+For higher-quality enrichment, ODIN runs a two-agent **proposer/reviewer** loop over a logical model. A proposer agent drafts a description, classification, vocabulary mappings, and PII flags for every element; a reviewer agent then audits that draft against the dataset's full DCAT context and returns a verdict — APPROVE or REJECT, with per-issue comments. The proposer revises on each rejection, up to ten iterations, and a long-term review memory carries lessons from past runs into new ones to speed convergence. Progress streams live over Server-Sent Events, and the converged result is persisted to the model's elements for the data owner to accept or reject.
 
-`ODRL` `Access Levels` `Regulatory Signals` `Owner-Gated`
+`Proposer/Reviewer` `Self-Critique` `Long-Term Memory` `SSE` `Owner-Gated`
+
+### ODRL Terms of Use & ODRE Enforcement
+Once elements are classified and vocabulary-mapped, ODIN automatically derives a machine-readable [ODRL](https://www.w3.org/TR/odrl-model/) terms-of-use policy for every dataset. The access level — OPEN, INTERNAL_ONLY, RESTRICTED, or HIGHLY_RESTRICTED — follows directly from the most sensitive element classification. Applicable regulatory frameworks (MiFID II, EMIR, GDPR, Basel III, FCRA) are inferred from FIBO vocabulary mappings, dataset keywords, and PII element signals — when any element is flagged as personal data or a direct identifier, the `HAS_PII_ELEMENTS` signal fires and `POLICY_STRICT` rules are added automatically. Consumers see the terms in plain English; data owners accept and lock the policy with one click. A dedicated **policy-service** then enforces those policies at request time using the **ODRE** algorithm (A-Level and B1-Level), returning a structured `UsageDecision` — granted, denied, or delegated — rather than leaving enforcement to convention.
+
+`ODRL` `ODRE` `Access Levels` `FCRA · GDPR · MiFID II` `Policy Decision Point`
 
 ---
 
@@ -96,7 +101,9 @@ ODIN's metamodel is grounded in W3C, OMG, and FIBO standards. Your metadata is p
 | **OpenLineage** | Linux Foundation | Open standard for data lineage collection. Compatible with Spark, dbt, Airflow, Flink, and 30+ integrations out of the box. |
 | **FIBO** | EDM Council | Financial Industry Business Ontology. Industry-standard vocabulary for financial instruments, parties, contracts, and processes. FND · FBC · SEC · MD · BP |
 | **SKOS** | W3C | Simple Knowledge Organization System. `exactMatch`, `closeMatch`, `relatedMatch` - precise semantic relationships between data elements and concepts. |
+| **DPV** | W3C | Data Privacy Vocabulary. A taxonomy of personal-data categories, processing purposes, and legal bases. DPV-PD concept IRIs let ODIN AI-detect PII and direct-identifier fields without manual annotation. |
 | **ODRL** | W3C | Open Digital Rights Language. Terms-of-use policies derived from element classifications and vocabulary concepts — permissions, prohibitions, obligations, and access levels. |
+| **ODRE** | Academic (Cimmino et al., 2025) | Open Digital Rights Enforcement. Algorithm 1 evaluates ODRL policies at request time and returns a `UsageDecision` — granted, denied, or delegated. ODIN's policy-service implements A-Level (static) and B1-Level (variable injection) enforcement. |
 
 ---
 
@@ -204,7 +211,7 @@ Different source systems use different column names for the same concept: `trade
 
 Open source. API-first. Open-standards.
 
-Six Spring Boot microservices, each owning its data store. Deploy to Kubernetes, Docker Compose, or your cloud of choice. No managed service required.
+Seven Spring Boot microservices, each owning its data store. Deploy to Kubernetes, Docker Compose, or your cloud of choice. No managed service required.
 
 ### Services
 
@@ -214,8 +221,9 @@ Six Spring Boot microservices, each owning its data store. Deploy to Kubernetes,
 | **harvest-service** | 8002 | Spring Batch crawlers for Snowflake, Glue, Teradata, DCAT HTTP. Quartz scheduler. |
 | **lineage-service** | 8003 | OpenLineage ingestion. DDL parsing via Apache Calcite. Apache AGE Cypher graph queries. |
 | **search-service** | 8004 | OpenSearch indexing with FIBO facets. Autocomplete. Full-text + semantic hybrid search. |
-| **ai-service** | 8005 | Spring AI RAG pipeline. pgvector embeddings. Ollama (local) or OpenAI. SSE chat streaming. |
+| **ai-service** | 8005 | Spring AI RAG pipeline. pgvector embeddings. Ollama (local) or OpenAI. SSE chat streaming. Agentic proposer/reviewer review. |
 | **identity-service** | 8006 | Keycloak OAuth2/OIDC. Role-based access (Administrator, Data Owner, Steward, Governance). User management with Keycloak sync. API keys. Multi-tenant isolation. |
+| **policy-service** | 8007 | ODRL policy registry + ODRE enforcement engine (PDP). Evaluates A-Level and B1-Level policies at request time. Kafka-driven sync from dataset changes. Evaluation audit log. |
 
 ### Data Stores
 
@@ -244,8 +252,8 @@ We're working with a small group of data engineering and governance teams across
 
 | | |
 |---|---|
-| **6** | Microservices, all open source |
-| **6** | Open standards at the core |
+| **7** | Microservices, all open source |
+| **9** | Open standards at the core |
 | **0** | Vendor lock-in |
 
 ---

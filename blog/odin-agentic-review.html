@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Agents That Review Their Own Work: ODIN's Proposer/Reviewer Loop</title>
+  <meta name="description"
+    content="A technical look at ODIN's agentic metadata review: a two-agent proposer/reviewer loop that drafts, critiques, and converges on element-level metadata before a human ever sees it, streamed live over Server-Sent Events." />
+  <meta name="author" content="ODIN Catalog" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#060912" />
+
+  <link rel="canonical" href="https://odin-catalog.com/blog/odin-agentic-review" />
+  <link rel="icon" type="image/png" href="../logo-dark.png" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="ODIN Catalog" />
+  <meta property="og:title" content="Agents That Review Their Own Work: ODIN's Proposer/Reviewer Loop" />
+  <meta property="og:description"
+    content="A two-agent proposer/reviewer loop that drafts, critiques, and converges on element-level metadata before a human ever sees it; streamed live over Server-Sent Events." />
+  <meta property="og:url" content="https://odin-catalog.com/blog/odin-agentic-review" />
+  <meta property="og:image" content="https://odin-catalog.com/logo-light.png" />
+  <meta property="article:published_time" content="2026-06-24" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Agents That Review Their Own Work: ODIN's Proposer/Reviewer Loop",
+    "description": "A technical look at ODIN's agentic metadata review: a two-agent proposer/reviewer loop that drafts, critiques, and converges on element-level metadata before a human ever sees it, streamed live over Server-Sent Events.",
+    "datePublished": "2026-06-24",
+    "author": { "@type": "Organization", "name": "ODIN Catalog" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "ODIN Catalog",
+      "url": "https://odin-catalog.com/",
+      "logo": "https://odin-catalog.com/logo-light.png"
+    },
+    "url": "https://odin-catalog.com/blog/odin-agentic-review",
+    "mainEntityOfPage": "https://odin-catalog.com/blog/odin-agentic-review"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #060912;
+      --surface: #0d1321;
+      --surface2: #111827;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.12);
+      --indigo: #6366f1;
+      --indigo-lt: #818cf8;
+      --cyan: #22d3ee;
+      --violet: #a78bfa;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --subtle: #475569;
+    }
+
+    html {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(6, 9, 18, 0.8);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      height: 36px;
+      width: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .logo-name {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+
+    .alpha-pill {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.08);
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+      transition: color 0.15s;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border2);
+      margin: 0 6px;
+    }
+
+    .nav-ghost {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted) !important;
+      border: 1px solid var(--border2);
+      padding: 6px 14px !important;
+      border-radius: 7px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s !important;
+    }
+
+    .nav-ghost:hover {
+      color: var(--text) !important;
+      border-color: rgba(255, 255, 255, 0.25) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--indigo);
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 8px;
+      margin-left: 4px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .nav-cta:hover {
+      background: #4f52d0;
+      transform: translateY(-1px);
+    }
+
+    /* ── Reading progress bar ── */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet), var(--indigo));
+      z-index: 200;
+      width: 0%;
+    }
+
+    /* ── Page wrapper ── */
+    .page-outer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 24px 96px;
+    }
+
+    /* ── Article header ── */
+    .article-header {
+      max-width: 720px;
+      margin-bottom: 64px;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .meta-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--violet);
+      background: rgba(167, 139, 250, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .meta-sep {
+      color: var(--subtle);
+    }
+
+    .meta-date,
+    .meta-read {
+      font-size: 13px;
+      color: var(--subtle);
+    }
+
+    .article-title {
+      font-size: clamp(32px, 5.5vw, 54px);
+      font-weight: 900;
+      line-height: 1.07;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--violet) 0%, var(--cyan) 50%, var(--indigo-lt) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .article-lede {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--muted);
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Two-column layout ── */
+    .article-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* ── Article body ── */
+    .article-body {
+      min-width: 0;
+    }
+
+    .article-body p {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+    }
+
+    .article-body h2 {
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text);
+      margin: 56px 0 20px;
+      scroll-margin-top: 80px;
+    }
+
+    .article-body h3 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      margin: 36px 0 14px;
+    }
+
+    .article-body strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .article-body em {
+      font-style: italic;
+      color: var(--cyan);
+    }
+
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border2);
+      padding: 2px 7px;
+      border-radius: 5px;
+      color: #c4b5fd;
+    }
+
+    .article-body ul,
+    .article-body ol {
+      padding-left: 24px;
+      margin-bottom: 24px;
+    }
+
+    .article-body li {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    .pull-quote {
+      border-left: 3px solid var(--violet);
+      margin: 40px 0;
+      padding: 20px 28px;
+      background: rgba(167, 139, 250, 0.05);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .pull-quote p {
+      font-family: 'Lora', serif;
+      font-size: 20px !important;
+      font-style: italic;
+      color: var(--text) !important;
+      margin: 0 !important;
+      line-height: 1.6 !important;
+    }
+
+    .callout {
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 24px 28px;
+      background: var(--surface2);
+      margin: 36px 0;
+    }
+
+    .callout-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 12px;
+    }
+
+    .callout p {
+      font-size: 15px !important;
+      margin-bottom: 0 !important;
+      color: var(--muted) !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    /* ── Code block ── */
+    .code-block {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 32px 0;
+    }
+
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--subtle);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .code-block-label {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .code-block pre {
+      padding: 20px;
+      overflow-x: auto;
+      margin: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .code-block code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #e2e8f0;
+    }
+
+    .c-key {
+      color: #818cf8;
+    }
+
+    .c-str {
+      color: #86efac;
+    }
+
+    .c-punct {
+      color: var(--subtle);
+    }
+
+    .c-num {
+      color: #fcd34d;
+    }
+
+    .c-cmnt {
+      color: var(--subtle);
+      font-style: italic;
+    }
+
+    .c-uri {
+      color: #67e8f9;
+    }
+
+    /* ── Model concept card grid ── */
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .concept-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      transition: border-color 0.2s;
+    }
+
+    .concept-card:hover {
+      border-color: var(--border2);
+    }
+
+    .concept-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+
+    .concept-card p {
+      font-size: 14px !important;
+      line-height: 1.6 !important;
+      color: var(--muted) !important;
+      margin: 0 !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    /* ── Phase table ── */
+    .policy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
+    }
+
+    .policy-table th {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .policy-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    .policy-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .policy-table td:first-child {
+      font-family: 'JetBrains Mono', monospace;
+      color: #c4b5fd;
+      font-size: 13px;
+    }
+
+    .policy-table td:nth-child(2) {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .policy-table td:nth-child(3) {
+      color: var(--muted);
+    }
+
+    /* ── Pipeline step ── */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 32px 0;
+    }
+
+    .pipeline-step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .pipeline-step:hover {
+      border-color: var(--border2);
+    }
+
+    .step-num {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--violet);
+      background: rgba(167, 139, 250, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      border-radius: 8px;
+      padding: 4px 10px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-body h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .step-body p {
+      font-size: 14px !important;
+      line-height: 1.65 !important;
+      color: var(--muted) !important;
+      margin: 0 !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    /* ── Benefit pillars ── */
+    .pillar-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .pillar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+    }
+
+    .pillar-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .pillar-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .pillar-card p {
+      font-size: 13px !important;
+      line-height: 1.55 !important;
+      color: var(--muted) !important;
+      margin: 0 !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── Sticky side TOC ── */
+    .article-sidebar {
+      position: sticky;
+      top: 84px;
+      max-height: calc(100vh - 104px);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .article-sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .toc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 20px 16px;
+    }
+
+    .toc-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .toc-list li a {
+      display: block;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--subtle);
+      border-radius: 7px;
+      line-height: 1.4;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .toc-list li a:hover {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .toc-list li a.active {
+      color: var(--violet);
+      background: rgba(167, 139, 250, 0.08);
+      font-weight: 600;
+    }
+
+    .toc-meta {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .toc-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--subtle);
+    }
+
+    .toc-meta-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Related article link ── */
+    .related-box {
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      border-radius: 14px;
+      padding: 20px 24px;
+      background: rgba(167, 139, 250, 0.04);
+      margin: 40px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .related-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .related-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 6px;
+    }
+
+    .related-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    .related-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .related-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--violet);
+      transition: opacity 0.15s;
+    }
+
+    .related-link:hover {
+      opacity: 0.8;
+    }
+
+    /* ── Article footer ── */
+    .article-footer {
+      margin-top: 72px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--indigo-lt);
+      transition: gap 0.15s;
+    }
+
+    .back-link:hover {
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--subtle);
+    }
+
+    .footer-copy a {
+      color: var(--indigo-lt);
+    }
+
+    @media (max-width: 1024px) {
+      .article-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .article-sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .page-outer {
+        padding: 90px 20px 72px;
+      }
+
+      .pull-quote {
+        padding: 16px 20px;
+      }
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9CLPM26RP7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-9CLPM26RP7');
+  </script>
+</head>
+
+<body>
+
+  <div id="progress"></div>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="../" class="nav-logo" style="display:flex;align-items:center;gap:10px">
+        <img src="../logo-dark.png" alt="ODIN Catalog" class="logo-img" />
+        <span class="logo-name">ODIN Catalog</span>
+        <span class="alpha-pill">Alpha</span>
+      </a>
+      <div class="nav-links">
+        <a href="../#features">Features</a>
+        <a href="../#lineage">Lineage</a>
+        <a href="../#usecase">Use Cases</a>
+        <div class="nav-divider"></div>
+        <a href="https://docs.odin-catalog.com/" class="nav-ghost">Docs</a>
+        <a href="./index.html" class="nav-ghost">Blog</a>
+        <a href="https://github.com/ODIN-Data-Intelligence" class="nav-cta">GitHub →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-outer">
+
+    <!-- ── Article header ── -->
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="meta-tag">Engineering</span>
+        <span class="meta-sep">·</span>
+        <span class="meta-date">24 June 2026</span>
+        <span class="meta-sep">·</span>
+        <span class="meta-read">12 min read</span>
+      </div>
+      <h1 class="article-title">
+        Agents That<br />
+        <span class="gradient-text">Review Their Own Work</span>
+      </h1>
+      <p class="article-lede">
+        A single LLM call will happily tell you a column is a "customer identifier" and move on. It will not tell you
+        it was wrong. ODIN's agentic metadata review puts two models in a loop (one proposes, one critiques) and
+        does not stop until the critic runs out of objections. Here is how it works, and why the human still has the
+        last word.
+      </p>
+    </header>
+
+    <!-- ── Two-column layout ── -->
+    <div class="article-layout">
+
+      <!-- ── Article body ── -->
+      <article class="article-body">
+
+        <h2 id="the-one-shot-problem">The one-shot problem</h2>
+
+        <p>
+          Asking a language model to enrich metadata is easy. Give it a column name, a logical type, and a few
+          vocabulary labels, and it will return a classification, a business description, a handful of concept
+          mappings, and a guess about whether the field is personal data. For a clean, well-named column, the
+          answer is usually good.
+        </p>
+
+        <p>
+          The failure mode is quieter than a wrong answer that announces itself. A one-shot model produces a
+          <em>confident</em> answer and no signal about how much to trust it. It classifies <code>cust_ref</code>
+          as <code>INTERNAL</code> without noticing that an adjacent column carries a national ID which should
+          have pulled the whole record to <code>HIGH_CONFIDENTIAL</code>. It maps <code>amt</code> to a generic
+          <code>schema.org</code> concept when a precise <code>fibo-fnd-acc-cur:MonetaryAmount</code> mapping was
+          available in the dataset's vocabulary. It misses that "direct identifier" and "personal information" are
+          not the same flag. None of these are hallucinations exactly. They are the ordinary errors of a model that
+          only looked once.
+        </p>
+
+        <div class="pull-quote">
+          <p>"A one-shot model gives you an answer. It does not give you a reason to believe the answer."</p>
+        </div>
+
+        <p>
+          The standard fix for this in human teams is not "hire a smarter analyst." It is review. Someone drafts;
+          someone else checks the draft against the full context and pushes back. ODIN applies the same structure
+          to its AI layer: metadata enrichment runs as a <strong>proposer/reviewer loop</strong>, not a single call.
+        </p>
+
+        <h2 id="proposer-reviewer">The proposer/reviewer pattern</h2>
+
+        <p>
+          The pattern is simple to state and surprisingly powerful in practice. Two agents play distinct roles
+          against the same dataset:
+        </p>
+
+        <div class="concept-grid">
+          <div class="concept-card">
+            <div class="concept-name">proposer</div>
+            <p>Drafts a complete enrichment for every element in a logical model (description, classification,
+              vocabulary concept mappings, and PII / direct-identifier flags) each with its own short reasoning.</p>
+          </div>
+          <div class="concept-card">
+            <div class="concept-name">reviewer</div>
+            <p>Audits the draft against the dataset's full DCAT context (title, description, keywords, every sibling
+              element ) and returns a verdict: APPROVE, or REJECT with specific, per-issue comments.</p>
+          </div>
+        </div>
+
+        <p>
+          The asymmetry is the point. The proposer optimises for a complete, plausible draft. The reviewer
+          optimises for finding what is wrong with it. Giving each model one job and the reviewer the whole
+          dataset rather than one element at a time. It surfaces exactly the cross-element mistakes that a one-shot
+          call cannot see, because the reviewer is looking at the proposal <em>and</em> the context side by side.
+        </p>
+
+        <p>
+          When the reviewer rejects, its comments are not free text for a human to read later. Each comment is
+          structured; it names the element, the <strong>dimension</strong> in question (description, classification,
+          vocabulary, or PII), and the issue. The proposer consumes those comments and produces a revised draft.
+          The loop continues until the reviewer returns <code>APPROVE</code>, or until a hard iteration cap is hit.
+        </p>
+
+        <h2 id="the-loop">How ODIN's loop runs</h2>
+
+        <p>
+          A review is kicked off against a single logical model and streams its progress back to the caller. The
+          server runs the loop on a virtual thread so a long review never blocks a request thread.
+        </p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-label">Start an agentic review (Server-Sent Events)</span>
+          </div>
+          <pre><code><span class="c-cmnt"># POST /api/v1/agentic-review (streams text/event-stream)</span>
+curl -N -X POST https://catalog.example/api/v1/agentic-review \
+  -H <span class="c-str">"Content-Type: application/json"</span> \
+  -H <span class="c-str">"Accept: text/event-stream"</span> \
+  -d <span class="c-str">'{ "datasetId": "3fa85f64-...", "modelId": "7c9e6679-..." }'</span></code></pre>
+        </div>
+
+        <p>
+          The request body is just the dataset and the model to review. Everything else (the current metadata, the
+          available vocabularies, the lessons from past reviews) is gathered server-side. The loop then proceeds
+          through a fixed set of phases, each emitted as an event so the UI can render progress live:
+        </p>
+
+        <div class="pipeline">
+          <div class="pipeline-step">
+            <div class="step-num">01</div>
+            <div class="step-body">
+              <h4>Gather context</h4>
+              <p>The service loads the dataset's full DCAT metadata and the model's elements, scoped to the caller's
+                tenant and user. The bearer token is captured on the request thread and forwarded so every downstream
+                call stays correctly scoped.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">02</div>
+            <div class="step-body">
+              <h4>Recall lessons from memory</h4>
+              <p>Before drafting anything, the loop retrieves relevant lessons from prior reviews (recurring
+                corrections the reviewer has made before) and folds them into the proposer's instructions so it does
+                not relitigate the same mistakes.</p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">03</div>
+            <div class="step-body">
+              <h4>Propose</h4>
+              <p>The proposer drafts every element's description, classification, vocabulary concept mappings, and
+                PII / direct-identifier flags; each accompanied by a one-line reasoning that the reviewer can attack.
+              </p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">04</div>
+            <div class="step-body">
+              <h4>Review</h4>
+              <p>The reviewer reads the draft against the full dataset context and returns <code>APPROVE</code> or
+                <code>REJECT</code>, with a per-issue comment list and a one-line summary. Dimensions the reviewer is
+                satisfied with are locked, so subsequent iterations refine only what is still contested instead of
+                oscillating over settled ground.
+              </p>
+            </div>
+          </div>
+          <div class="pipeline-step">
+            <div class="step-num">05</div>
+            <div class="step-body">
+              <h4>Converge or cap</h4>
+              <p>On <code>APPROVE</code> the loop finishes and the converged proposal is persisted. If the
+                conversation has not converged after <strong>ten iterations</strong>, the loop stops anyway and
+                returns its best proposal; bounded cost, no runaway loops.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>The event stream</h3>
+
+        <p>
+          Every step above is a JSON <code>AgenticEvent</code> on the SSE stream. The phase markers let a UI show
+          exactly where the loop is; the substantive events carry the proposal and the review. The terminal event
+          tells the client how it ended.
+        </p>
+
+        <table class="policy-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Meaning</th>
+              <th>Payload</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CONTEXT · MEMORY</td>
+              <td>Setup markers</td>
+              <td>Context gathered; lessons recalled from review memory</td>
+            </tr>
+            <tr>
+              <td>PROPOSING · PROPOSAL</td>
+              <td>Proposer turn</td>
+              <td>The drafted per-element enrichment for this iteration</td>
+            </tr>
+            <tr>
+              <td>REVIEWING · REVIEW</td>
+              <td>Reviewer turn</td>
+              <td>Verdict (APPROVE / REJECT), per-issue comments, summary</td>
+            </tr>
+            <tr>
+              <td>LOCKED</td>
+              <td>Convergence guard</td>
+              <td>A dimension the reviewer has approved and the loop has frozen</td>
+            </tr>
+            <tr>
+              <td>DONE · MAX_REACHED</td>
+              <td>Terminal</td>
+              <td>The final, persisted proposal; converged, or capped</td>
+            </tr>
+            <tr>
+              <td>ERROR</td>
+              <td>Terminal</td>
+              <td>A human-readable message; the stream then completes</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <div class="callout-label">Why stream it at all?</div>
+          <p>An agentic review can take several model round-trips. Streaming the proposer's drafts and the reviewer's
+            objections as they happen turns a black box into a glass one: the data owner watches the argument unfold,
+            sees <em>why</em> a classification moved from INTERNAL to CONFIDENTIAL, and arrives at the final proposal
+            already understanding it. Swagger UI cannot render SSE; the producer console and <code>curl -N</code> can.
+          </p>
+        </div>
+
+        <h2 id="memory">Memory: the loop gets better over time</h2>
+
+        <p>
+          A review loop that starts from zero every time is doomed to make the same correction forever. ODIN's
+          reviewer writes down what it learns. When a review converges, the lessons embedded in the reviewer's
+          objections ("fields named <code>*_ref</code> in this tenant are foreign keys, not identifiers,"
+          "monetary columns here should map to FIBO, not schema.org") are persisted to a long-term review memory.
+        </p>
+
+        <p>
+          On the next review, those lessons are recalled during the <code>MEMORY</code> phase and handed to the
+          proposer up front. The effect compounds: the proposer's first draft on the hundredth dataset is markedly
+          better than its first draft on the first, because it inherits a hundred datasets' worth of corrections.
+          Convergence gets faster, and the reviewer spends its objections on genuinely new problems instead of
+          recurring ones.
+        </p>
+
+        <div class="pull-quote">
+          <p>"The first review of a dataset is a conversation. The thousandth is a conversation that remembers the
+            previous nine hundred and ninety-nine."</p>
+        </div>
+
+        <h2 id="human-authority">The human still signs off</h2>
+
+        <p>
+          It would be tempting to let a converged, self-reviewed proposal write itself straight into the catalog.
+          ODIN deliberately does not. When the loop finishes, the result is persisted to the model's elements as a
+          <strong>recommendation</strong>; exactly the same owner-gated state that a one-shot suggestion lands in.
+          The data owner reviews it and accepts or rejects, element by element or in bulk.
+        </p>
+
+        <p>
+          This is not timidity about AI. It is the same principle that runs through the rest of ODIN: AI accelerates
+          metadata capture, but a named human remains accountable for what the catalog asserts. A two-agent loop
+          produces a far stronger draft than a single call but a draft that converged between two models is still
+          a draft until the person accountable for the dataset says otherwise.
+        </p>
+
+        <div class="pillar-row">
+          <div class="pillar-card">
+            <div class="pillar-icon">🔁</div>
+            <div class="pillar-name">Self-critiqued</div>
+            <p>Two agents in a loop catch cross-element mistakes a single call cannot see.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🧠</div>
+            <div class="pillar-name">Memory-backed</div>
+            <p>Lessons from past reviews carry forward, so the loop converges faster over time.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">📡</div>
+            <div class="pillar-name">Transparent</div>
+            <p>Every proposal and objection streams live over SSE; the reasoning is visible, not hidden.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon">🏛️</div>
+            <div class="pillar-name">Owner-gated</div>
+            <p>The converged result is a recommendation; a named owner accepts or rejects it.</p>
+          </div>
+        </div>
+
+        <div class="related-box">
+          <div class="related-icon">📐</div>
+          <div class="related-body">
+            <div class="related-label">Related reading</div>
+            <div class="related-title">The ODIN Design Manifesto</div>
+            <div class="related-desc">Why AI is enrichment and the human is authority; principle four of the eight
+              that every ODIN design decision is tested against.</div>
+            <a href="./manifesto.html" class="related-link">Read the manifesto →</a>
+          </div>
+        </div>
+
+        <h2 id="conclusion">Drafts you can argue with</h2>
+
+        <p>
+          The interesting thing about a proposer/reviewer loop is not that it produces better metadata, though it
+          does. It is that it produces metadata with an <em>argument attached</em>. Every accepted classification
+          has a trail: what the proposer suggested, what the reviewer objected to, how it was resolved. That trail
+          is exactly what a governance framework asks for; not "the catalog says this column is confidential," but
+          "here is why, and here is who agreed."
+        </p>
+
+        <p>
+          One-shot enrichment optimises for a populated catalog. An agentic, owner-gated loop optimises for a
+          catalog that is both populated and defensible. In a domain where the difference between
+          <code>INTERNAL</code> and <code>HIGH_CONFIDENTIAL</code> is a regulatory event, that is the difference
+          that matters.
+        </p>
+
+        <div class="section-divider"></div>
+
+        <div class="article-footer">
+          <a href="./index.html" class="back-link">← Back to blog</a>
+          <span class="footer-copy">
+            ODIN Catalog · Apache 2.0 ·
+            <a href="https://github.com/ODIN-Data-Intelligence">GitHub</a>
+          </span>
+        </div>
+
+      </article>
+
+      <!-- ── Sticky side TOC ── -->
+      <aside class="article-sidebar" aria-label="Article navigation">
+        <div class="toc-card">
+          <div class="toc-label">Contents</div>
+          <ol class="toc-list">
+            <li><a href="#the-one-shot-problem">The one-shot problem</a></li>
+            <li><a href="#proposer-reviewer">Proposer/reviewer pattern</a></li>
+            <li><a href="#the-loop">How the loop runs</a></li>
+            <li><a href="#memory">Memory over time</a></li>
+            <li><a href="#human-authority">The human signs off</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+          </ol>
+          <div class="toc-meta">
+            <div class="toc-meta-item">
+              <span class="toc-meta-dot" style="background:var(--violet)"></span>
+              12 min read
+            </div>
+            <div class="toc-meta-item">
+              <span class="toc-meta-dot" style="background:var(--muted)"></span>
+              24 June 2026
+            </div>
+            <div class="toc-meta-item">
+              <span class="toc-meta-dot" style="background:var(--emerald)"></span>
+              Engineering
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div><!-- /article-layout -->
+  </div><!-- /page-outer -->
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const pct = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+      document.getElementById('progress').style.width = (pct * 100) + '%';
+    });
+
+    const tocLinks = document.querySelectorAll('.toc-list a');
+    const tocMap = {};
+    tocLinks.forEach(a => { tocMap[a.getAttribute('href').slice(1)] = a; });
+
+    let current = '';
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          current = e.target.id;
+          tocLinks.forEach(a => a.classList.remove('active'));
+          if (tocMap[current]) tocMap[current].classList.add('active');
+        }
+      });
+    }, { rootMargin: '-60px 0px -60% 0px', threshold: 0 });
+
+    document.querySelectorAll('.article-body h2[id]').forEach(h => io.observe(h));
+  </script>
+
+</body>
+
+</html>

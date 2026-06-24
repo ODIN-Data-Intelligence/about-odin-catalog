@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>ODRL Under the Hood: How the W3C Standard Actually Works — ODIN Catalog</title>
+  <title>ODRL Under the Hood: How the W3C Standard Actually Works</title>
   <meta name="description"
     content="A technical deep-dive into the ODRL information model, JSON-LD wire format, constraint algebra, and policy types that make the W3C standard the right foundation for machine-readable data governance." />
   <meta name="author" content="ODIN Catalog" />
@@ -50,72 +50,170 @@
     rel="stylesheet" />
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #060912;
-      --surface:   #0d1321;
-      --surface2:  #111827;
-      --border:    rgba(255,255,255,0.07);
-      --border2:   rgba(255,255,255,0.12);
-      --indigo:    #6366f1;
-      --indigo-lt: #818cf8;
-      --cyan:      #22d3ee;
-      --violet:    #a78bfa;
-      --emerald:   #10b981;
-      --amber:     #f59e0b;
-      --rose:      #f43f5e;
-      --text:      #f1f5f9;
-      --muted:     #94a3b8;
-      --subtle:    #475569;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
-    body { min-height: 100vh; overflow-x: hidden; }
-    a { color: inherit; text-decoration: none; }
+    :root {
+      --bg: #060912;
+      --surface: #0d1321;
+      --surface2: #111827;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.12);
+      --indigo: #6366f1;
+      --indigo-lt: #818cf8;
+      --cyan: #22d3ee;
+      --violet: #a78bfa;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --subtle: #475569;
+    }
+
+    html {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
     /* ── Nav ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
       backdrop-filter: blur(12px);
-      background: rgba(6,9,18,0.8);
+      background: rgba(6, 9, 18, 0.8);
       border-bottom: 1px solid var(--border);
     }
+
     .nav-inner {
-      max-width: 1200px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px; height: 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
     }
-    .nav-logo { display: flex; align-items: center; gap: 10px; }
-    .logo-img { height: 36px; width: 36px; object-fit: contain; border-radius: 8px; }
-    .logo-name { font-weight: 700; font-size: 15px; letter-spacing: -0.3px; }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-img {
+      height: 36px;
+      width: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .logo-name {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+
     .alpha-pill {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
-      color: var(--amber); border: 1px solid rgba(245,158,11,0.4);
-      background: rgba(245,158,11,0.08); padding: 2px 8px; border-radius: 99px; margin-left: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.08);
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 8px;
     }
-    .nav-links { display: flex; align-items: center; gap: 6px; }
-    .nav-links a { font-size: 14px; color: var(--muted); font-weight: 500; transition: color 0.15s; padding: 6px 12px; border-radius: 6px; }
-    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-    .nav-divider { width: 1px; height: 18px; background: var(--border2); margin: 0 6px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+      transition: color 0.15s;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border2);
+      margin: 0 6px;
+    }
+
     .nav-ghost {
-      font-size: 13px; font-weight: 500; color: var(--muted) !important;
-      border: 1px solid var(--border2); padding: 6px 14px !important;
-      border-radius: 7px; transition: color 0.15s, border-color 0.15s, background 0.15s !important;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted) !important;
+      border: 1px solid var(--border2);
+      padding: 6px 14px !important;
+      border-radius: 7px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s !important;
     }
-    .nav-ghost:hover { color: var(--text) !important; border-color: rgba(255,255,255,0.25) !important; background: rgba(255,255,255,0.05) !important; }
+
+    .nav-ghost:hover {
+      color: var(--text) !important;
+      border-color: rgba(255, 255, 255, 0.25) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
     .nav-cta {
-      font-size: 13px; font-weight: 600; background: var(--indigo);
-      color: #fff; padding: 7px 16px; border-radius: 8px; margin-left: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--indigo);
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 8px;
+      margin-left: 4px;
       transition: background 0.15s, transform 0.1s;
     }
-    .nav-cta:hover { background: #4f52d0; transform: translateY(-1px); }
+
+    .nav-cta:hover {
+      background: #4f52d0;
+      transform: translateY(-1px);
+    }
 
     /* ── Reading progress bar ── */
     #progress {
-      position: fixed; top: 0; left: 0; height: 2px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
       background: linear-gradient(90deg, var(--cyan), var(--violet), var(--indigo));
-      z-index: 200; width: 0%;
+      z-index: 200;
+      width: 0%;
     }
 
     /* ── Page wrapper ── */
@@ -126,30 +224,63 @@
     }
 
     /* ── Article header ── */
-    .article-header { max-width: 720px; margin-bottom: 64px; }
+    .article-header {
+      max-width: 720px;
+      margin-bottom: 64px;
+    }
+
     .article-meta {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
       margin-bottom: 24px;
     }
+
     .meta-tag {
-      font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-      color: var(--cyan); background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.25);
-      padding: 3px 10px; border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      padding: 3px 10px;
+      border-radius: 6px;
     }
-    .meta-sep { color: var(--subtle); }
-    .meta-date, .meta-read { font-size: 13px; color: var(--subtle); }
+
+    .meta-sep {
+      color: var(--subtle);
+    }
+
+    .meta-date,
+    .meta-read {
+      font-size: 13px;
+      color: var(--subtle);
+    }
+
     .article-title {
-      font-size: clamp(32px, 5.5vw, 54px); font-weight: 900;
-      line-height: 1.07; letter-spacing: -2px; margin-bottom: 24px;
+      font-size: clamp(32px, 5.5vw, 54px);
+      font-weight: 900;
+      line-height: 1.07;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
     }
+
     .gradient-text {
       background: linear-gradient(135deg, var(--cyan) 0%, var(--violet) 50%, var(--indigo-lt) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+
     .article-lede {
       font-family: 'Lora', Georgia, serif;
-      font-size: 20px; line-height: 1.65; color: var(--muted);
-      padding-bottom: 40px; border-bottom: 1px solid var(--border);
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--muted);
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
     }
 
     /* ── Two-column layout ── */
@@ -161,235 +292,593 @@
     }
 
     /* ── Article body ── */
-    .article-body { min-width: 0; }
+    .article-body {
+      min-width: 0;
+    }
+
     .article-body p {
       font-family: 'Lora', Georgia, serif;
-      font-size: 18px; line-height: 1.8; color: #cbd5e1; margin-bottom: 24px;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #cbd5e1;
+      margin-bottom: 24px;
     }
+
     .article-body h2 {
-      font-size: clamp(22px, 3.5vw, 30px); font-weight: 800;
-      letter-spacing: -0.8px; color: var(--text);
-      margin: 56px 0 20px; scroll-margin-top: 80px;
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text);
+      margin: 56px 0 20px;
+      scroll-margin-top: 80px;
     }
+
     .article-body h3 {
-      font-size: 18px; font-weight: 700; letter-spacing: -0.3px;
-      color: var(--text); margin: 36px 0 14px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      margin: 36px 0 14px;
     }
-    .article-body strong { color: var(--text); font-weight: 600; }
-    .article-body em { font-style: italic; color: var(--cyan); }
+
+    .article-body strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .article-body em {
+      font-style: italic;
+      color: var(--cyan);
+    }
+
     .article-body code {
-      font-family: 'JetBrains Mono', monospace; font-size: 14px;
-      background: rgba(255,255,255,0.07); border: 1px solid var(--border2);
-      padding: 2px 7px; border-radius: 5px; color: #c4b5fd;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border2);
+      padding: 2px 7px;
+      border-radius: 5px;
+      color: #c4b5fd;
     }
-    .article-body ul, .article-body ol { padding-left: 24px; margin-bottom: 24px; }
+
+    .article-body ul,
+    .article-body ol {
+      padding-left: 24px;
+      margin-bottom: 24px;
+    }
+
     .article-body li {
       font-family: 'Lora', Georgia, serif;
-      font-size: 18px; line-height: 1.8; color: #cbd5e1; margin-bottom: 8px;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #cbd5e1;
+      margin-bottom: 8px;
     }
 
     .pull-quote {
       border-left: 3px solid var(--cyan);
-      margin: 40px 0; padding: 20px 28px;
-      background: rgba(34,211,238,0.05);
+      margin: 40px 0;
+      padding: 20px 28px;
+      background: rgba(34, 211, 238, 0.05);
       border-radius: 0 12px 12px 0;
     }
+
     .pull-quote p {
       font-family: 'Lora', serif;
-      font-size: 20px !important; font-style: italic;
-      color: var(--text) !important; margin: 0 !important; line-height: 1.6 !important;
+      font-size: 20px !important;
+      font-style: italic;
+      color: var(--text) !important;
+      margin: 0 !important;
+      line-height: 1.6 !important;
     }
 
     .callout {
-      border: 1px solid var(--border2); border-radius: 14px;
-      padding: 24px 28px; background: var(--surface2); margin: 36px 0;
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 24px 28px;
+      background: var(--surface2);
+      margin: 36px 0;
     }
+
     .callout-label {
-      font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-      color: var(--subtle); margin-bottom: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 12px;
     }
+
     .callout p {
-      font-size: 15px !important; margin-bottom: 0 !important;
-      color: var(--muted) !important; font-family: 'Inter', sans-serif !important;
+      font-size: 15px !important;
+      margin-bottom: 0 !important;
+      color: var(--muted) !important;
+      font-family: 'Inter', sans-serif !important;
     }
 
     /* ── Code block ── */
     .code-block {
-      background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 12px; overflow: hidden; margin: 32px 0;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 32px 0;
     }
+
     .code-block-header {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 16px; border-bottom: 1px solid var(--border);
-      font-size: 12px; color: var(--subtle); font-family: 'JetBrains Mono', monospace;
-    }
-    .code-block-label { color: var(--muted); font-weight: 500; }
-    .code-block pre {
-      padding: 20px; overflow-x: auto; margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--subtle);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 13px; line-height: 1.7;
     }
-    .code-block code { background: none; border: none; padding: 0; color: #e2e8f0; }
-    .c-key   { color: #818cf8; }
-    .c-str   { color: #86efac; }
-    .c-punct { color: var(--subtle); }
-    .c-num   { color: #fcd34d; }
-    .c-cmnt  { color: var(--subtle); font-style: italic; }
-    .c-uri   { color: #67e8f9; }
+
+    .code-block-label {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .code-block pre {
+      padding: 20px;
+      overflow-x: auto;
+      margin: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .code-block code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #e2e8f0;
+    }
+
+    .c-key {
+      color: #818cf8;
+    }
+
+    .c-str {
+      color: #86efac;
+    }
+
+    .c-punct {
+      color: var(--subtle);
+    }
+
+    .c-num {
+      color: #fcd34d;
+    }
+
+    .c-cmnt {
+      color: var(--subtle);
+      font-style: italic;
+    }
+
+    .c-uri {
+      color: #67e8f9;
+    }
 
     /* ── Model concept card grid ── */
     .concept-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px; margin: 32px 0;
+      gap: 16px;
+      margin: 32px 0;
     }
+
     .concept-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 20px 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
       transition: border-color 0.2s;
     }
-    .concept-card:hover { border-color: var(--border2); }
+
+    .concept-card:hover {
+      border-color: var(--border2);
+    }
+
     .concept-name {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 13px; font-weight: 600; color: var(--cyan);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cyan);
       margin-bottom: 8px;
     }
+
     .concept-card p {
-      font-size: 14px !important; line-height: 1.6 !important;
-      color: var(--muted) !important; margin: 0 !important;
+      font-size: 14px !important;
+      line-height: 1.6 !important;
+      color: var(--muted) !important;
+      margin: 0 !important;
       font-family: 'Inter', sans-serif !important;
     }
 
     /* ── Policy type table ── */
-    .policy-table { width: 100%; border-collapse: collapse; margin: 28px 0; }
-    .policy-table th {
-      font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
-      color: var(--subtle); text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border2);
+    .policy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
     }
-    .policy-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: top; }
-    .policy-table tr:last-child td { border-bottom: none; }
-    .policy-table td:first-child { font-family: 'JetBrains Mono', monospace; color: #c4b5fd; font-size: 13px; }
-    .policy-table td:nth-child(2) { color: var(--text); font-weight: 500; }
-    .policy-table td:nth-child(3) { color: var(--muted); }
+
+    .policy-table th {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .policy-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    .policy-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .policy-table td:first-child {
+      font-family: 'JetBrains Mono', monospace;
+      color: #c4b5fd;
+      font-size: 13px;
+    }
+
+    .policy-table td:nth-child(2) {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .policy-table td:nth-child(3) {
+      color: var(--muted);
+    }
 
     /* ── Constraint triple ── */
     .constraint-triple {
-      display: flex; align-items: center; gap: 12px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 18px; margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 8px 0;
       flex-wrap: wrap;
     }
+
     .ct-part {
-      font-family: 'JetBrains Mono', monospace; font-size: 13px;
-      padding: 4px 12px; border-radius: 6px; font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 500;
     }
-    .ct-lo { background: rgba(99,102,241,0.15); color: #a5b4fc; }
-    .ct-op { background: rgba(245,158,11,0.12); color: #fcd34d; }
-    .ct-rv { background: rgba(16,185,129,0.12); color: #6ee7b7; }
-    .ct-label { font-size: 11px; color: var(--subtle); font-family: 'Inter', sans-serif; margin-top: 8px; width: 100%; }
+
+    .ct-lo {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+    }
+
+    .ct-op {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fcd34d;
+    }
+
+    .ct-rv {
+      background: rgba(16, 185, 129, 0.12);
+      color: #6ee7b7;
+    }
+
+    .ct-label {
+      font-size: 11px;
+      color: var(--subtle);
+      font-family: 'Inter', sans-serif;
+      margin-top: 8px;
+      width: 100%;
+    }
 
     /* ── Pipeline step ── */
-    .pipeline { display: flex; flex-direction: column; gap: 0; margin: 32px 0; }
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 32px 0;
+    }
+
     .pipeline-step {
-      display: flex; gap: 20px; align-items: flex-start;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
       padding: 20px 24px;
-      border: 1px solid var(--border); border-radius: 14px;
-      background: var(--surface); margin-bottom: 8px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      margin-bottom: 8px;
       transition: border-color 0.2s;
     }
-    .pipeline-step:hover { border-color: var(--border2); }
-    .step-num {
-      font-size: 11px; font-weight: 800; letter-spacing: 1px;
-      color: var(--cyan); background: rgba(34,211,238,0.12);
-      border: 1px solid rgba(34,211,238,0.25); border-radius: 8px;
-      padding: 4px 10px; flex-shrink: 0; margin-top: 2px;
+
+    .pipeline-step:hover {
+      border-color: var(--border2);
     }
-    .step-body h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+
+    .step-num {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--cyan);
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      border-radius: 8px;
+      padding: 4px 10px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-body h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
     .step-body p {
-      font-size: 14px !important; line-height: 1.65 !important;
-      color: var(--muted) !important; margin: 0 !important;
+      font-size: 14px !important;
+      line-height: 1.65 !important;
+      color: var(--muted) !important;
+      margin: 0 !important;
       font-family: 'Inter', sans-serif !important;
     }
 
     /* ── Governance pillars ── */
     .pillar-row {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px; margin: 32px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
     }
+
     .pillar-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 22px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
     }
-    .pillar-icon { font-size: 28px; margin-bottom: 12px; }
+
+    .pillar-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
     .pillar-name {
-      font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
     }
+
     .pillar-card p {
-      font-size: 13px !important; line-height: 1.55 !important;
-      color: var(--muted) !important; margin: 0 !important;
+      font-size: 13px !important;
+      line-height: 1.55 !important;
+      color: var(--muted) !important;
+      margin: 0 !important;
       font-family: 'Inter', sans-serif !important;
     }
 
-    .section-divider { height: 1px; background: var(--border); margin: 48px 0; }
+    .section-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
 
     /* ── Sticky side TOC ── */
-    .article-sidebar { position: sticky; top: 84px; max-height: calc(100vh - 104px); overflow-y: auto; scrollbar-width: none; }
-    .article-sidebar::-webkit-scrollbar { display: none; }
-    .toc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 20px 16px; }
-    .toc-label { font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--subtle); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
-    .toc-list li a { display: block; padding: 6px 10px; font-size: 13px; font-weight: 500; color: var(--subtle); border-radius: 7px; line-height: 1.4; transition: color 0.15s, background 0.15s; }
-    .toc-list li a:hover { color: var(--muted); background: rgba(255,255,255,0.04); }
-    .toc-list li a.active { color: var(--cyan); background: rgba(34,211,238,0.08); font-weight: 600; }
-    .toc-meta { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
-    .toc-meta-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--subtle); }
-    .toc-meta-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .article-sidebar {
+      position: sticky;
+      top: 84px;
+      max-height: calc(100vh - 104px);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .article-sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .toc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 20px 16px;
+    }
+
+    .toc-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .toc-list li a {
+      display: block;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--subtle);
+      border-radius: 7px;
+      line-height: 1.4;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .toc-list li a:hover {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .toc-list li a.active {
+      color: var(--cyan);
+      background: rgba(34, 211, 238, 0.08);
+      font-weight: 600;
+    }
+
+    .toc-meta {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .toc-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--subtle);
+    }
+
+    .toc-meta-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
     /* ── Related article link ── */
     .related-box {
-      border: 1px solid rgba(34,211,238,0.2); border-radius: 14px;
-      padding: 20px 24px; background: rgba(34,211,238,0.04); margin: 40px 0;
-      display: flex; align-items: flex-start; gap: 16px;
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: 14px;
+      padding: 20px 24px;
+      background: rgba(34, 211, 238, 0.04);
+      margin: 40px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
     }
-    .related-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+
+    .related-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
     .related-body {}
+
     .related-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
-      color: var(--subtle); margin-bottom: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 6px;
     }
+
     .related-title {
-      font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.35;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.35;
     }
-    .related-desc { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+
+    .related-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
     .related-link {
-      font-size: 13px; font-weight: 600; color: var(--cyan); transition: opacity 0.15s;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cyan);
+      transition: opacity 0.15s;
     }
-    .related-link:hover { opacity: 0.8; }
+
+    .related-link:hover {
+      opacity: 0.8;
+    }
 
     /* ── Article footer ── */
     .article-footer {
-      margin-top: 72px; padding-top: 36px;
+      margin-top: 72px;
+      padding-top: 36px;
       border-top: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
+
     .back-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 14px; font-weight: 600; color: var(--indigo-lt); transition: gap 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--indigo-lt);
+      transition: gap 0.15s;
     }
-    .back-link:hover { gap: 12px; }
-    .footer-copy { font-size: 13px; color: var(--subtle); }
-    .footer-copy a { color: var(--indigo-lt); }
+
+    .back-link:hover {
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--subtle);
+    }
+
+    .footer-copy a {
+      color: var(--indigo-lt);
+    }
 
     @media (max-width: 1024px) {
-      .article-layout { grid-template-columns: 1fr; }
-      .article-sidebar { display: none; }
+      .article-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .article-sidebar {
+        display: none;
+      }
     }
+
     @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .page-outer { padding: 90px 20px 72px; }
-      .pull-quote { padding: 16px 20px; }
-      .constraint-triple { gap: 8px; }
+      .nav-links {
+        display: none;
+      }
+
+      .page-outer {
+        padding: 90px 20px 72px;
+      }
+
+      .pull-quote {
+        padding: 16px 20px;
+      }
+
+      .constraint-triple {
+        gap: 8px;
+      }
     }
   </style>
 
@@ -444,8 +933,8 @@
       </h1>
       <p class="article-lede">
         Most descriptions of ODRL stop at "it's a W3C standard for expressing permissions and prohibitions." That is
-        true and also almost useless. This post goes deeper — through the information model, the JSON-LD wire format,
-        the constraint algebra, and the four policy types — and explains precisely why those design decisions make
+        true and also almost useless. This post goes deeper through the information model, the JSON-LD wire format,
+        the constraint algebra, and the four policy types and explains precisely why those design decisions make
         ODRL the right foundation for governance that actually scales.
       </p>
     </header>
@@ -460,11 +949,11 @@
 
         <p>
           A data governance policy is a statement about what can and cannot be done with data. Every organisation has
-          them. The problem is not a shortage of policies — it is a shortage of policies that machines can read.
+          them. The problem is not a shortage of policies. It is a shortage of policies that machines can read.
         </p>
 
         <p>
-          Text-based policies — PDFs, wiki pages, README sections, catalog description fields — share three
+          Text-based policies (PDFs, wiki pages, README sections, catalog description fields) share three
           structural weaknesses. They cannot be composed across systems: a prohibition written in one team's wiki
           cannot be referenced by another team's pipeline. They cannot be validated: there is no way to check
           whether a proposed data use is consistent with a text policy without a human reading it. And they cannot
@@ -474,12 +963,13 @@
         <p>
           The deeper issue is vocabulary. Two organisations that want to enforce compatible policies need to agree
           on what words mean. "Distribute" means different things to a media licensing lawyer and a data engineer.
-          In a federated architecture — a data mesh, a data space, a multi-cloud lakehouse — policies travel across
+          In a federated architecture (a data mesh, a data space, a multi-cloud lakehouse) policies travel across
           organisational and system boundaries. If the vocabulary is not shared, enforcement cannot be.
         </p>
 
         <div class="pull-quote">
-          <p>"Two systems cannot enforce the same policy if they do not agree on what the words mean. ODRL is the vocabulary agreement."</p>
+          <p>"Two systems cannot enforce the same policy if they do not agree on what the words mean. ODRL is the
+            vocabulary agreement."</p>
         </div>
 
         <p>
@@ -499,34 +989,42 @@
         <div class="concept-grid">
           <div class="concept-card">
             <div class="concept-name">odrl:Policy</div>
-            <p>The container document. Has a unique URI identifier, a type (Set, Offer, Agreement, or Request), and a set of rules. Every ODRL document is a Policy.</p>
+            <p>The container document. Has a unique URI identifier, a type (Set, Offer, Agreement, or Request), and a
+              set of rules. Every ODRL document is a Policy.</p>
           </div>
           <div class="concept-card">
             <div class="concept-name">odrl:Asset</div>
-            <p>The thing being governed. Can be a dataset URI, a DCAT distribution, an API endpoint, or any identifiable digital resource. An Asset can also be an AssetCollection.</p>
+            <p>The thing being governed. Can be a dataset URI, a DCAT distribution, an API endpoint, or any identifiable
+              digital resource. An Asset can also be an AssetCollection.</p>
           </div>
           <div class="concept-card">
             <div class="concept-name">odrl:Party</div>
-            <p>Who the rules apply to — identified by URI, not by name. An assigner grants permissions; an assignee receives them. Both roles can be PartyCollections (groups).</p>
+            <p>Who the rules apply to: identified by URI, not by name. An assigner grants permissions; an assignee
+              receives them. Both roles can be PartyCollections (groups).</p>
           </div>
           <div class="concept-card">
             <div class="concept-name">odrl:Rule</div>
-            <p>A permission, prohibition, or duty. Links an action to an asset and optionally to a party. A permission may carry duties — things that must be done when exercising it.</p>
+            <p>A permission, prohibition, or duty. Links an action to an asset and optionally to a party. A permission
+              may carry duties; things that must be done when exercising it.</p>
           </div>
           <div class="concept-card">
             <div class="concept-name">odrl:Action</div>
-            <p>What action the rule governs. From the ODRL action vocabulary: <code>use</code>, <code>distribute</code>, <code>reproduce</code>, <code>present</code>, <code>modify</code>, <code>derive</code>, <code>aggregate</code>, <code>anonymize</code>, <code>extract</code>, <code>inform</code>, and more.</p>
+            <p>What action the rule governs. From the ODRL action vocabulary: <code>use</code>, <code>distribute</code>,
+              <code>reproduce</code>, <code>present</code>, <code>modify</code>, <code>derive</code>,
+              <code>aggregate</code>, <code>anonymize</code>, <code>extract</code>, <code>inform</code>, and more.
+            </p>
           </div>
           <div class="concept-card">
             <div class="concept-name">odrl:Constraint</div>
-            <p>A condition that qualifies a rule. Expressed as a (LeftOperand, Operator, RightOperand) triple — the algebraic form that makes constraint evaluation algorithmic rather than interpretive.</p>
+            <p>A condition that qualifies a rule. Expressed as a (LeftOperand, Operator, RightOperand) triple: the
+              algebraic form that makes constraint evaluation algorithmic rather than interpretive.</p>
           </div>
         </div>
 
         <p>
           The relationships between these concepts are intentionally minimal. A Policy contains Rules. Each Rule
           references an Action and an Asset. Parties are associated at the Rule level. Constraints qualify Rules.
-          That is the entire model. The simplicity is not a limitation — it is what makes ODRL composable across
+          That is the entire model. The simplicity is not a limitation. It is what makes ODRL composable across
           systems that know nothing about each other beyond the standard.
         </p>
 
@@ -536,7 +1034,7 @@
           The ODRL action vocabulary is not a flat list. Actions form a subsumption hierarchy:
           <code>odrl:use</code> is the broadest action and subsumes nearly everything below it.
           A permission for <code>odrl:use</code> implicitly permits <code>odrl:distribute</code>,
-          <code>odrl:reproduce</code>, <code>odrl:present</code>, and more — unless those are
+          <code>odrl:reproduce</code>, <code>odrl:present</code>, and more: unless those are
           explicitly prohibited in the same policy.
         </p>
 
@@ -544,7 +1042,7 @@
           This matters for governance because it determines what a prohibition actually blocks. A prohibition on
           <code>odrl:distribute</code> does not block <code>odrl:reproduce</code>, even though both are
           sub-actions of <code>odrl:use</code>. Precision at the action level is the mechanism for expressing
-          nuanced policies — "you may use this data for internal analytics but may not share it externally" —
+          nuanced policies: "You may use this data for internal analytics but may not share it externally"
           without ambiguity.
         </p>
 
@@ -552,7 +1050,7 @@
 
         <p>
           ODRL defines four Policy subtypes that map to distinct real-world governance workflows. Understanding
-          which type to use — and when — is the difference between a policy that supports a governance process
+          which type to use and when is the difference between a policy that supports a governance process
           and one that merely describes it.
         </p>
 
@@ -568,22 +1066,22 @@
             <tr>
               <td>odrl:Set</td>
               <td>Standalone policy, no specific parties</td>
-              <td>Default catalog terms — "these are the rules for anyone accessing this dataset"</td>
+              <td>Default catalog terms: "These are the rules for anyone accessing this dataset"</td>
             </tr>
             <tr>
               <td>odrl:Offer</td>
               <td>Proposal from assigner to potential assignees</td>
-              <td>Data marketplace listing — "here is what I will grant under these conditions"</td>
+              <td>Data marketplace listing: "Here is what I will grant under these conditions"</td>
             </tr>
             <tr>
               <td>odrl:Agreement</td>
               <td>Bilateral policy, both parties bound</td>
-              <td>Data sharing contract — "we have agreed to these terms for this specific use"</td>
+              <td>Data sharing contract: "We have agreed to these terms for this specific use"</td>
             </tr>
             <tr>
               <td>odrl:Request</td>
               <td>Assignee requests permissions from assigner</td>
-              <td>Access request form — "I am requesting these specific rights for this purpose"</td>
+              <td>Access request form: "I am requesting these specific rights for this purpose"</td>
             </tr>
           </tbody>
         </table>
@@ -592,7 +1090,7 @@
           The Set type is the right choice for a data catalog: it expresses the terms of use for a dataset without
           presuming a specific consumer. The Offer type becomes relevant in marketplace contexts, where a data
           provider publishes the terms they are willing to offer before any specific consumer has agreed. The
-          Agreement type is the output of a successful negotiation — it binds both parties to specific terms and
+          Agreement type is the output of a successful negotiation. It binds both parties to specific terms and
           is the type used in data space bilateral contracts. The Request type supports the access request
           workflow: a consumer expresses what permissions they need before a provider decides whether to grant them.
         </p>
@@ -600,10 +1098,11 @@
         <div class="callout">
           <div class="callout-label">Composing policy types into workflows</div>
           <p>A complete access workflow looks like: (1) data provider publishes an <strong>Offer</strong>
-          for a dataset; (2) consumer submits a <strong>Request</strong> expressing their specific use case;
-          (3) provider evaluates and counter-signs into an <strong>Agreement</strong>. ODIN generates
-          <strong>Set</strong> policies by default — the starting point before any specific consumer is known.
-          Offer, Request, and Agreement support the full workflow that arrives once parties are identified.</p>
+            for a dataset; (2) consumer submits a <strong>Request</strong> expressing their specific use case;
+            (3) provider evaluates and counter-signs into an <strong>Agreement</strong>. ODIN generates
+            <strong>Set</strong> policies by default: The starting point before any specific consumer is known.
+            Offer, Request, and Agreement support the full workflow that arrives once parties are identified.
+          </p>
         </div>
 
         <h2 id="constraint-algebra">Constraints: precision without programming</h2>
@@ -656,15 +1155,17 @@
         </p>
 
         <ul>
-          <li><strong><code>odrl:dateTime</code></strong> — absolute time bound (ISO 8601)</li>
-          <li><strong><code>odrl:elapsedTime</code></strong> — relative duration from first use (ISO 8601 duration)</li>
-          <li><strong><code>odrl:purpose</code></strong> — declared use purpose, typically a URI from a purpose taxonomy</li>
-          <li><strong><code>odrl:spatial</code></strong> — geographic region, typically a GeoNames URI</li>
-          <li><strong><code>odrl:count</code></strong> — maximum number of permitted uses</li>
-          <li><strong><code>odrl:payAmount</code></strong> — monetary payment condition (with unit)</li>
-          <li><strong><code>odrl:industry</code></strong> — industry sector of the assignee, often a NAICS or SIC code URI</li>
-          <li><strong><code>odrl:deliveryChannel</code></strong> — the channel through which the asset is delivered</li>
-          <li><strong><code>odrl:event</code></strong> — triggered by an external event (e.g., a regulatory event)</li>
+          <li><strong><code>odrl:dateTime</code></strong>: absolute time bound (ISO 8601)</li>
+          <li><strong><code>odrl:elapsedTime</code></strong>: relative duration from first use (ISO 8601 duration)</li>
+          <li><strong><code>odrl:purpose</code></strong>: declared use purpose, typically a URI from a purpose taxonomy
+          </li>
+          <li><strong><code>odrl:spatial</code></strong>: geographic region, typically a GeoNames URI</li>
+          <li><strong><code>odrl:count</code></strong>: maximum number of permitted uses</li>
+          <li><strong><code>odrl:payAmount</code></strong>: monetary payment condition (with unit)</li>
+          <li><strong><code>odrl:industry</code></strong>: industry sector of the assignee, often a NAICS or SIC code
+            URI</li>
+          <li><strong><code>odrl:deliveryChannel</code></strong>: the channel through which the asset is delivered</li>
+          <li><strong><code>odrl:event</code></strong>: triggered by an external event (e.g., a regulatory event)</li>
         </ul>
 
         <h3>Logical constraints: composing conditions</h3>
@@ -675,9 +1176,9 @@
         </p>
 
         <ul>
-          <li><code>odrl:and</code> — all operand constraints must be satisfied</li>
-          <li><code>odrl:or</code> — at least one operand constraint must be satisfied</li>
-          <li><code>odrl:xone</code> — exactly one operand constraint must be satisfied</li>
+          <li><code>odrl:and</code>: all operand constraints must be satisfied</li>
+          <li><code>odrl:or</code>: at least one operand constraint must be satisfied</li>
+          <li><code>odrl:xone</code>: exactly one operand constraint must be satisfied</li>
         </ul>
 
         <p>
@@ -696,7 +1197,7 @@
 
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-label">ODRL Agreement — financial dataset, internal analytics, time-bounded</span>
+            <span class="code-block-label">ODRL Agreement: financial dataset, internal analytics, time-bounded</span>
           </div>
           <pre><code><span class="c-punct">{</span>
   <span class="c-key">"@context"</span><span class="c-punct">:</span>  <span class="c-str">"http://www.w3.org/ns/odrl.jsonld"</span><span class="c-punct">,</span>
@@ -754,7 +1255,7 @@
 
         <p>
           Several things are worth observing about this document. The assigner and assignee are both identified
-          by URI — no names, no email addresses, no strings that can drift. The constraint on the permission
+          by URI; no names, no email addresses, no strings that can drift. The constraint on the permission
           uses <code>purpose isA ex:InternalRiskAnalytics</code>, where <code>ex:InternalRiskAnalytics</code>
           is itself a URI that can be resolved to a definition. The duty structure demonstrates how obligations
           attach to permissions rather than floating free: the <code>compensate</code> and <code>inform</code>
@@ -763,7 +1264,7 @@
 
         <p>
           And critically: the entire document is a valid JSON object. A consuming system does not need an ODRL
-          library to extract the prohibitions — it can traverse the JSON. An ODRL-aware system can do full
+          library to extract the prohibitions; it can traverse the JSON. An ODRL-aware system can do full
           policy evaluation. This spectrum of interoperability is intentional.
         </p>
 
@@ -771,7 +1272,7 @@
 
         <p>
           ODRL's core vocabulary covers a wide range of generic data governance scenarios, but domain-specific
-          requirements — financial regulation, healthcare, data space connector policies — need additional
+          requirements (financial regulation, healthcare, data space connector policies) need additional
           vocabulary terms. ODRL supports this through <strong>profiles</strong>.
         </p>
 
@@ -788,19 +1289,19 @@
             <div class="step-body">
               <h4>Eclipse Dataspace Components (IDS Usage Control)</h4>
               <p>The IDSA connector policy profile extends ODRL with <code>idsc:</code> prefixed actions for
-              data space message handling — connector-to-connector data transfer constraints, usage logging
-              requirements, and access token scoping. This is the profile used by Eclipse EDC and the
-              International Data Spaces Association for cross-organisational data exchange.</p>
+                data space message handling; connector-to-connector data transfer constraints, usage logging
+                requirements, and access token scoping. This is the profile used by Eclipse EDC and the
+                International Data Spaces Association for cross-organisational data exchange.</p>
             </div>
           </div>
           <div class="pipeline-step">
             <div class="step-num">CC</div>
             <div class="step-body">
               <h4>Creative Commons Licences as ODRL</h4>
-              <p>Creative Commons licences — CC-BY, CC-BY-SA, CC0 — are expressible as ODRL Set policies.
-              The W3C has published a CC/ODRL mapping. This means a dataset with a CC licence can have its
-              terms consumed by an ODRL evaluator without special-casing, and a catalog that stores CC licences
-              as ODRL gains uniform policy evaluation across all licence types.</p>
+              <p>Creative Commons licences (CC-BY, CC-BY-SA, CC0) are expressible as ODRL Set policies.
+                The W3C has published a CC/ODRL mapping. This means a dataset with a CC licence can have its
+                terms consumed by an ODRL evaluator without special-casing, and a catalog that stores CC licences
+                as ODRL gains uniform policy evaluation across all licence types.</p>
             </div>
           </div>
           <div class="pipeline-step">
@@ -808,9 +1309,10 @@
             <div class="step-body">
               <h4>DCAT-AP and dcat:hasPolicy</h4>
               <p>The W3C Data Catalog Vocabulary (DCAT) defines <code>dcat:hasPolicy</code> precisely as
-              a property whose value is an ODRL policy. A DCAT-compliant catalog that populates
-              <code>hasPolicy</code> with a well-formed ODRL document is therefore exposing machine-readable
-              governance terms via a standard property understood by any DCAT consumer.</p>
+                a property whose value is an ODRL policy. A DCAT-compliant catalog that populates
+                <code>hasPolicy</code> with a well-formed ODRL document is therefore exposing machine-readable
+                governance terms via a standard property understood by any DCAT consumer.
+              </p>
             </div>
           </div>
           <div class="pipeline-step">
@@ -818,10 +1320,11 @@
             <div class="step-body">
               <h4>ODIN classification-driven profile</h4>
               <p>ODIN's profile maps data classification levels (PUBLIC, INTERNAL, CONFIDENTIAL,
-              HIGH_CONFIDENTIAL) to ODRL Set policy templates, and extends the obligation vocabulary
-              with domain-specific duty terms (<code>licenseMarketData</code>, <code>applyGDPRMasking</code>,
-              <code>notifyDataOwnerBeforeAIUse</code>) triggered by FIBO and schema.org concept mappings.
-              These terms are resolvable via ODIN's own vocabulary endpoint.</p>
+                HIGH_CONFIDENTIAL) to ODRL Set policy templates, and extends the obligation vocabulary
+                with domain-specific duty terms (<code>licenseMarketData</code>, <code>applyGDPRMasking</code>,
+                <code>notifyDataOwnerBeforeAIUse</code>) triggered by FIBO and schema.org concept mappings.
+                These terms are resolvable via ODIN's own vocabulary endpoint.
+              </p>
             </div>
           </div>
         </div>
@@ -837,45 +1340,52 @@
           <div class="pillar-card">
             <div class="pillar-icon">🔗</div>
             <div class="pillar-name">Shared vocabulary</div>
-            <p>"Distribute" means <code>odrl:distribute</code> everywhere. No ambiguity across team, system, or organisational boundaries.</p>
+            <p>"Distribute" means <code>odrl:distribute</code> everywhere. No ambiguity across team, system, or
+              organisational boundaries.</p>
           </div>
           <div class="pillar-card">
             <div class="pillar-icon">⚙️</div>
             <div class="pillar-name">Machine-evaluable</div>
-            <p>Policy evaluation is a deterministic algorithm: given a policy and a proposed action, compute whether the action is permitted. No human interpretation required.</p>
+            <p>Policy evaluation is a deterministic algorithm: given a policy and a proposed action, compute whether the
+              action is permitted. No human interpretation required.</p>
           </div>
           <div class="pillar-card">
             <div class="pillar-icon">🧩</div>
             <div class="pillar-name">Composable</div>
-            <p>Policies reference each other by URI. An enterprise-wide prohibition can apply across all datasets without being copied — just referenced.</p>
+            <p>Policies reference each other by URI. An enterprise-wide prohibition can apply across all datasets
+              without being copied, just referenced.</p>
           </div>
           <div class="pillar-card">
             <div class="pillar-icon">📋</div>
             <div class="pillar-name">Auditable by design</div>
-            <p>A policy is a document with a URI. It can be hashed, versioned, and time-stamped. You can prove what the policy was — and what it was derived from — at any point in time.</p>
+            <p>A policy is a document with a URI. It can be hashed, versioned, and time-stamped. You can prove what the
+              policy was and what it was derived from at any point in time.</p>
           </div>
           <div class="pillar-card">
             <div class="pillar-icon">🛡️</div>
             <div class="pillar-name">Enforcement-ready</div>
-            <p>Any system that can read JSON can read the policy. Keycloak, OPA, API gateways, and AI tool guards can enforce the same policy terms without custom integration.</p>
+            <p>Any system that can read JSON can read the policy. Keycloak, OPA, API gateways, and AI tool guards can
+              enforce the same policy terms without custom integration.</p>
           </div>
           <div class="pillar-card">
             <div class="pillar-icon">🌐</div>
             <div class="pillar-name">Cross-system interoperability</div>
-            <p>A policy expressed in ODRL travels with the dataset across organisational boundaries. The recipient system can evaluate it without knowing anything about the issuer's internal architecture.</p>
+            <p>A policy expressed in ODRL travels with the dataset across organisational boundaries. The recipient
+              system can evaluate it without knowing anything about the issuer's internal architecture.</p>
           </div>
         </div>
 
         <p>
           The interoperability point deserves elaboration. Governance frameworks that rely on proprietary
-          metadata schemas — a catalog's internal classification field, a pipeline's custom tags — collapse
+          metadata schemas. A catalog's internal classification field, a pipeline's custom tags, collapse
           when data crosses system boundaries. The receiving system does not know what the tags mean. ODRL
           does not have this problem: the vocabulary is public, the semantics are defined, and any ODRL-aware
           system can evaluate a policy produced by any other ODRL-aware system.
         </p>
 
         <div class="pull-quote">
-          <p>"A policy that lives in a proprietary field governs one system. A policy expressed in ODRL governs every system that can read JSON-LD."</p>
+          <p>"A policy that lives in a proprietary field governs one system. A policy expressed in ODRL governs every
+            system that can read JSON-LD."</p>
         </div>
 
         <h3>The evaluation algorithm</h3>
@@ -886,11 +1396,15 @@
         </p>
 
         <ol>
-          <li>Collects all Rules from the Policy whose target matches the Asset and (if applicable) whose assignee includes the Party.</li>
+          <li>Collects all Rules from the Policy whose target matches the Asset and (if applicable) whose assignee
+            includes the Party.</li>
           <li>Evaluates each Rule's Constraints. A Rule is active only if all its Constraints are satisfied.</li>
           <li>If any active Prohibition applies to the Action: the action is <strong>prohibited</strong>.</li>
-          <li>If an active Permission applies to the Action and all its Duties are satisfiable: the action is <strong>permitted</strong>.</li>
-          <li>Otherwise: the action is <strong>not permitted</strong> (the ODRL closed-world assumption — absence of permission is prohibition).</li>
+          <li>If an active Permission applies to the Action and all its Duties are satisfiable: the action is
+            <strong>permitted</strong>.
+          </li>
+          <li>Otherwise: the action is <strong>not permitted</strong> (the ODRL closed-world assumption; absence of
+            permission is prohibition).</li>
         </ol>
 
         <p>
@@ -917,9 +1431,9 @@
             <div class="step-body">
               <h4>Compute dataset classification</h4>
               <p>Each logical data element has an accepted <code>classification</code> value. ODIN takes
-              the most restrictive across all published elements — PUBLIC &lt; INTERNAL &lt; CONFIDENTIAL
-              &lt; HIGH_CONFIDENTIAL. One CONFIDENTIAL element makes the dataset CONFIDENTIAL, regardless
-              of how many INTERNAL elements surround it.</p>
+                the most restrictive across all published elements: PUBLIC &lt; INTERNAL &lt; CONFIDENTIAL
+                &lt; HIGH_CONFIDENTIAL. One CONFIDENTIAL element makes the dataset CONFIDENTIAL, regardless
+                of how many INTERNAL elements surround it.</p>
             </div>
           </div>
           <div class="pipeline-step">
@@ -927,9 +1441,10 @@
             <div class="step-body">
               <h4>Map classification to ODRL access level template</h4>
               <p>Each classification level maps to a baseline ODRL Set policy: a defined set of permitted
-              actions, prohibited actions, and default obligations. CONFIDENTIAL, for example, permits
-              <code>odrl:use</code> for analytics and regulatory reporting while prohibiting
-              <code>odrl:distribute</code>, <code>odrl:reproduce</code>, and <code>odrl:present</code>.</p>
+                actions, prohibited actions, and default obligations. CONFIDENTIAL, for example, permits
+                <code>odrl:use</code> for analytics and regulatory reporting while prohibiting
+                <code>odrl:distribute</code>, <code>odrl:reproduce</code>, and <code>odrl:present</code>.
+              </p>
             </div>
           </div>
           <div class="pipeline-step">
@@ -937,9 +1452,10 @@
             <div class="step-body">
               <h4>Layer regulatory obligations from vocabulary signals</h4>
               <p>FIBO concept IRI prefixes identify regulatory domains. <code>fibo-md</code> mappings
-              add a <code>licenseMarketData</code> duty. Dataset keywords — <code>gdpr</code>,
-              <code>mifid</code>, <code>emir</code> — add applicable regulatory framework labels and
-              corresponding compliance obligations. These stack on top of the classification baseline.</p>
+                add a <code>licenseMarketData</code> duty. Dataset keywords (<code>gdpr</code>,
+                <code>mifid</code>, <code>emir</code>) add applicable regulatory framework labels and
+                corresponding compliance obligations. These stack on top of the classification baseline.
+              </p>
             </div>
           </div>
           <div class="pipeline-step">
@@ -947,10 +1463,10 @@
             <div class="step-body">
               <h4>Return or freeze the derived policy</h4>
               <p>The derived policy is returned live on every request while the <code>policySource</code>
-              is <code>derived</code>. When a data owner reviews and accepts the policy, it is frozen
-              into the dataset's <code>hasPolicy</code> field (<code>policySource: explicit</code>)
-              and only updated on explicit owner action. A <code>fallback</code> source means no element
-              classifications exist; ODIN builds a minimal policy from the dataset's licence field.</p>
+                is <code>derived</code>. When a data owner reviews and accepts the policy, it is frozen
+                into the dataset's <code>hasPolicy</code> field (<code>policySource: explicit</code>)
+                and only updated on explicit owner action. A <code>fallback</code> source means no element
+                classifications exist; ODIN builds a minimal policy from the dataset's licence field.</p>
             </div>
           </div>
         </div>
@@ -967,7 +1483,7 @@
 
         <p>
           Understanding the ODRL model makes the path from policy storage to policy enforcement concrete.
-          ODRL was designed for enforcement — the evaluation algorithm exists precisely because the
+          ODRL was designed for enforcement. The evaluation algorithm exists precisely because the
           specification authors intended policies to be evaluated by machines, not read by humans.
         </p>
 
@@ -977,27 +1493,27 @@
 
         <ul>
           <li>
-            <strong>API gateway enforcement</strong> — a gateway can call <code>GET /datasets/{id}/terms-of-use</code>
+            <strong>API gateway enforcement</strong>: A gateway can call <code>GET /datasets/{id}/terms-of-use</code>
             before proxying a data request, evaluate the ODRL policy against the requesting party and intended
             action, and reject requests that violate prohibitions or fail constraint checks.
           </li>
           <li>
-            <strong>OPA policy integration</strong> — the ODRL JSON can drive an Open Policy Agent policy
+            <strong>OPA policy integration</strong>: The ODRL JSON can drive an Open Policy Agent policy
             that evaluates the same rules as Rego. The ODRL document is the source of truth; OPA is the
             enforcement runtime.
           </li>
           <li>
-            <strong>Keycloak scope constraints</strong> — the access level from the derived ODRL policy maps
+            <strong>Keycloak scope constraints</strong>: The access level from the derived ODRL policy maps
             directly to OAuth scopes. A CONFIDENTIAL dataset requires a scope that can only be granted to
             identities in the data owner's approved list, derived from the ODRL assignee Party constraint.
           </li>
           <li>
-            <strong>AI agent tool guards</strong> — an AI agent that calls data catalog APIs can receive
+            <strong>AI agent tool guards</strong>: An AI agent that calls data catalog APIs can receive
             the ODRL policy alongside the dataset metadata and evaluate permitted actions before constructing
-            a query. The policy is not advisory to the agent — it is a structured input to its tool-use logic.
+            a query. The policy is not advisory to the agent. It is a structured input to its tool-use logic.
           </li>
           <li>
-            <strong>Data space connectors</strong> — in an IDS/Eclipse EDC architecture, the ODRL policy
+            <strong>Data space connectors</strong>: In an IDS/Eclipse EDC architecture, the ODRL policy
             (as an Offer or Agreement) is the contract that governs connector-to-connector data transfer.
             Enforcement is built into the connector protocol, not bolted on separately.
           </li>
@@ -1012,25 +1528,25 @@
         <h2 id="conclusion">What the standard actually gives you</h2>
 
         <p>
-          ODRL is not magic. A badly specified policy — wrong action vocabulary, missing constraints,
-          no parties identified — does not improve governance just because it is expressed in JSON-LD.
+          ODRL is not magic. A badly specified policy (wrong action vocabulary, missing constraints,
+          no parties identified) does not improve governance just because it is expressed in JSON-LD.
           The standard provides the grammar; the governance work is still required to produce a policy
           that accurately reflects intent.
         </p>
 
         <p>
           What the standard does give you is a foundation that does not rot. A custom classification
-          scheme, a proprietary metadata field, an internal tag vocabulary — these all become technical
+          scheme, a proprietary metadata field, an internal tag vocabulary; these all become technical
           debt the moment they cross a system boundary. An ODRL policy document can be handed to any
-          ODRL-aware system — a partner organisation's catalog, a data space connector, an AI agent,
-          a compliance auditor's tooling — and evaluated without translation.
+          ODRL-aware system: A partner organisation's catalog, a data space connector, an AI agent,
+          a compliance auditor's tooling. Then, it is evaluated without translation.
         </p>
 
         <p>
           Governance at scale is a vocabulary problem before it is a technology problem. The same
           policy intent expressed in a hundred different proprietary systems produces a hundred different
           enforcement behaviours. Expressed in ODRL, it produces one. The standard is the coordination
-          mechanism that makes federated governance possible — dataset by dataset, classification by
+          mechanism that makes federated governance possible; dataset by dataset, classification by
           classification, as the policies accumulate into something that actually works.
         </p>
 
@@ -1108,4 +1624,5 @@
   </script>
 
 </body>
+
 </html>
